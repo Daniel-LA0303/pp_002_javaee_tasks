@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Register</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/global.css">
 <script src="${pageContext.request.contextPath}/js/jquerymin.js"></script>
 </head>
@@ -29,6 +29,36 @@
         <a href="${pageContext.request.contextPath}/login">Login</a>
     </form>
     
-    <script src="${pageContext.request.contextPath}/js/register.js"></script>
+    <script type="text/javascript">
+	    $(document).ready(function () {
+	
+	        $("#submitLogin").click(function (event) {
+	
+	            event.preventDefault();
+	
+	            var username = $("#username").val();
+	            var password = $("#password").val();
+	            var email = $("#email").val();
+	
+	            $.ajax({
+	                url: "${pageContext.request.contextPath}/register",  // URL del Servlet
+	                type: "POST",  // Enviamos los datos usando POST
+	                data: {
+	                    username: username,
+	                    password: password,
+	                    email: email
+	                },
+	                success: function (response) {
+	                    // Aquí manejas la respuesta del servlet (por ejemplo, redirigir a una página o mostrar un mensaje)
+	                    console.log("Registro exitoso:", response);
+	                },
+	                error: function (xhr, status, error) {
+	                    // Manejo de errores
+	                    console.error("Error en el registro:", error);
+	                }
+	            });
+	        });
+	    });
+    </script>
 </body>
 </html>
