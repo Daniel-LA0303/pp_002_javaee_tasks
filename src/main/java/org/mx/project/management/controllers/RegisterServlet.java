@@ -9,9 +9,11 @@ import org.mx.project.management.services.impl.UserServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
@@ -50,10 +52,6 @@ public class RegisterServlet extends HttpServlet {
 		String password = req.getParameter("password");
 		String email = req.getParameter("email");
 
-		System.out.println("Usuario: " + username);
-		System.out.println("Email: " + email);
-		System.out.println("Password: " + password);
-
 		User user = new User();
 
 		user.setEmail(email);
@@ -62,8 +60,18 @@ public class RegisterServlet extends HttpServlet {
 
 		userService.saveUser(user);
 
+		HttpSession session = req.getSession();
+		session.setAttribute("email", email);
+
+		Cookie emailCookie = new Cookie("email", email);
+		emailCookie.setMaxAge(60 * 60); // La cookie expirará en una hora
+		emailCookie.setPath("/"); // Asegúrate de que el path sea adecuado para que la cookie esté disponible en
+									// toda la aplicación
+		resp.addCookie(emailCookie);
+
 		resp.setContentType("application/json");
-		resp.getWriter().write("{\"message\":\"Registro exitoso!\"}");
+		// resp.getWriter().write("{\"message\":\"Registro exitoso!\"}");
+		resp.sendRedirect(req.getContextPath() + "/principal.html");
 
 	}
 

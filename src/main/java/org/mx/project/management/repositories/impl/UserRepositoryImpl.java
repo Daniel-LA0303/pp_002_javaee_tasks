@@ -2,6 +2,7 @@ package org.mx.project.management.repositories.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -27,6 +28,35 @@ public class UserRepositoryImpl implements UserRepository {
 	public List<User> findAll() throws SQLException {
 
 		return null;
+	}
+
+	public User findByEmail(String email) {
+		String sql = "select * from users_tbl where email = ?";
+
+		User user = null;
+
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+			stmt.setString(1, email);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+
+					user = new User();
+					user.setName(rs.getString("name"));
+					user.setEmail(rs.getString("email"));
+					user.setPassword(rs.getString("password"));
+					user.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+					user.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+
+				}
+			}
+
+		} catch (Exception e) {
+
+		}
+
+		return user;
 	}
 
 	@Override

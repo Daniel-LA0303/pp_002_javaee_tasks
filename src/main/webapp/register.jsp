@@ -51,6 +51,7 @@
 	                success: function (response) {
 	                    // Aquí manejas la respuesta del servlet (por ejemplo, redirigir a una página o mostrar un mensaje)
 	                    console.log("Registro exitoso:", response);
+	                    window.location.href = "${pageContext.request.contextPath}/principal.html";
 	                },
 	                error: function (xhr, status, error) {
 	                    // Manejo de errores

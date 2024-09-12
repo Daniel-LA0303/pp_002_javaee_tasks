@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet({ "/login", "/login.html" })
-public class LoginServlet extends HttpServlet {
+@WebServlet({ "/principal", "/principal.html" })
+public class PrincipalPanelServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -24,7 +24,8 @@ public class LoginServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
+
+		getServletContext().getRequestDispatcher("/principalPanel.jsp").forward(req, resp);
 	}
 
 }
