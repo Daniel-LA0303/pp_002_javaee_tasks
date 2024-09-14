@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers.projects;
+package org.mx.project.management.controllers.Tasks;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mx.project.management.config.dateConfig.GsonConfig;
-import org.mx.project.management.models.Project;
-import org.mx.project.management.services.ProjectService;
-import org.mx.project.management.services.impl.ProjectServiceImpl;
+import org.mx.project.management.models.Task;
+import org.mx.project.management.services.TaskService;
+import org.mx.project.management.services.impl.TaskServiceImpl;
 
 import com.google.gson.Gson;
 
@@ -18,8 +18,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet({ "/projects" })
-public class ProjectsServelt extends HttpServlet {
+@WebServlet({ "/tasks" })
+public class TaskServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -43,8 +43,8 @@ public class ProjectsServelt extends HttpServlet {
 				throw new ServletException("Database connection not found");
 			}
 
-			ProjectService projectService = new ProjectServiceImpl(conn);
-			List<Project> projects = projectService.findAllProjects();
+			TaskService taskService = new TaskServiceImpl(conn);
+			List<Task> tasks = taskService.findAllTasks();
 
 			// Configurar el tipo de contenido de la respuesta
 			resp.setContentType("application/json");
@@ -52,7 +52,7 @@ public class ProjectsServelt extends HttpServlet {
 
 			// Convertir la lista de proyectos a JSON y escribir en la respuesta
 			Gson gson = GsonConfig.createGson(); // Usa el Gson configurado
-			String json = gson.toJson(projects);
+			String json = gson.toJson(tasks);
 			resp.getWriter().write(json);
 
 		} catch (SQLException e) {
@@ -71,18 +71,6 @@ public class ProjectsServelt extends HttpServlet {
 			// Cierre de recursos si es necesario
 			// if (conn != null) conn.close(); // Solo si manejas conexiones directamente
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see jakarta.servlet.http.HttpServlet#doPost(jakarta.servlet.http.
-	 * HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doPost(req, resp);
 	}
 
 }
