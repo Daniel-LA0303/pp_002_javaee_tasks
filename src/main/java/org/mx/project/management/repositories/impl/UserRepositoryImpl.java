@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.mx.project.management.models.User;
 import org.mx.project.management.repositories.UserRepository;
@@ -30,7 +31,14 @@ public class UserRepositoryImpl implements UserRepository {
 		return null;
 	}
 
-	public User findByEmail(String email) {
+	@Override
+	public User findById(Long id) throws SQLException {
+
+		return null;
+	}
+
+	@Override
+	public Optional<User> findUserByEmail(String email) {
 		String sql = "select * from users_tbl where email = ?";
 
 		User user = null;
@@ -56,13 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 		}
 
-		return user;
-	}
-
-	@Override
-	public User findById(Long id) throws SQLException {
-
-		return null;
+		return Optional.ofNullable(user);
 	}
 
 	@Override

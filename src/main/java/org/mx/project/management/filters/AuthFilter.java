@@ -15,7 +15,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebFilter({ "/principal" })
+@WebFilter({ "/principal", "/principal.html", "/projects" })
 public class AuthFilter implements Filter {
 
 	@Override
