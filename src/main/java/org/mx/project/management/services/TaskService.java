@@ -7,6 +7,14 @@ import org.mx.project.management.models.Task;
 
 public interface TaskService {
 
+	String deleteTask(Long id) throws SQLException;
+
 	List<Task> findAllTasks() throws SQLException;
+
+	Task findTaskById(Long id) throws SQLException;
+
+	String saveTask(Task task) throws SQLException;
+
+	String updateTask(Task task) throws SQLException;
 
 }

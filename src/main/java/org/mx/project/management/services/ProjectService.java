@@ -7,6 +7,14 @@ import org.mx.project.management.models.Project;
 
 public interface ProjectService {
 
+	String deleteProject(Long id) throws SQLException;
+
 	List<Project> findAllProjects() throws SQLException;
+
+	Project findProjectById(Long id) throws SQLException;
+
+	String saveProject(Project project) throws SQLException;
+
+	String updateProject(Project project) throws SQLException;
 
 }

@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers.Tasks;
+package org.mx.project.management.controllers.tasks;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -46,30 +46,26 @@ public class TaskServlet extends HttpServlet {
 			TaskService taskService = new TaskServiceImpl(conn);
 			List<Task> tasks = taskService.findAllTasks();
 
-			// Configurar el tipo de contenido de la respuesta
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
 
-			// Convertir la lista de proyectos a JSON y escribir en la respuesta
-			Gson gson = GsonConfig.createGson(); // Usa el Gson configurado
+			Gson gson = GsonConfig.createGson();
 			String json = gson.toJson(tasks);
 			resp.getWriter().write(json);
 
 		} catch (SQLException e) {
-			// Manejo de excepciones SQL
+
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			resp.getWriter().write("{\"error\": \"Database error occurred\"}");
-			e.printStackTrace(); // O usar un logger para registrar la excepción
+			e.printStackTrace();
 
 		} catch (Exception e) {
-			// Manejo de otras excepciones
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			resp.getWriter().write("{\"error\": \"An unexpected error occurred\"}");
-			e.printStackTrace(); // O usar un logger para registrar la excepción
+			e.printStackTrace();
 
 		} finally {
-			// Cierre de recursos si es necesario
-			// if (conn != null) conn.close(); // Solo si manejas conexiones directamente
+
 		}
 	}
 

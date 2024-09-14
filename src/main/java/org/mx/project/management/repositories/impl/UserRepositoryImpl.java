@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,19 +23,76 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public void delete(Long id) throws SQLException {
+		String sql = "DELETE FROM users_tbl WHERE id = ?";
 
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setLong(1, id);
+
+			int rowsAffected = stmt.executeUpdate();
+
+			if (rowsAffected == 0) {
+				throw new SQLException("No user found with ID: " + id);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	@Override
 	public List<User> findAll() throws SQLException {
+		String sql = "SELECT * FROM users_tbl";
 
-		return null;
+		List<User> users = new ArrayList<>();
+
+		try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+			while (rs.next()) {
+				User user = new User();
+				user.setId(rs.getLong("id"));
+				user.setName(rs.getString("name"));
+				user.setPassword(rs.getString("password"));
+				user.setEmail(rs.getString("email"));
+				user.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+				user.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+
+				users.add(user);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+		return users;
 	}
 
 	@Override
 	public User findById(Long id) throws SQLException {
+		String sql = "SELECT * FROM users_tbl WHERE id = ?";
 
-		return null;
+		User user = null;
+
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setLong(1, id);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					user = new User();
+					user.setId(rs.getLong("id"));
+					user.setName(rs.getString("name"));
+					user.setPassword(rs.getString("password"));
+					user.setEmail(rs.getString("email"));
+					user.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+					user.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+		return user;
 	}
 
 	@Override
@@ -85,15 +143,32 @@ public class UserRepositoryImpl implements UserRepository {
 			int rowsAffected = stmt.executeUpdate();
 			System.out.println(rowsAffected);
 		} catch (Exception e) {
-			e.printStackTrace(); // Manejo de excepciones
+			e.printStackTrace();
 			throw e;
 		}
 
 	}
 
 	@Override
-	public void update(User t) throws SQLException {
+	public void update(User user) throws SQLException {
+		String sql = "UPDATE users_tbl SET name = ?, password = ?, email = ?, updated_at = ? WHERE id = ?";
 
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+			stmt.setString(1, user.getName());
+			stmt.setString(2, user.getPassword());
+			stmt.setString(3, user.getEmail());
+
+			LocalDateTime now = LocalDateTime.now();
+			stmt.setTimestamp(4, Timestamp.valueOf(now));
+
+			stmt.setLong(5, user.getId());
+
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 }

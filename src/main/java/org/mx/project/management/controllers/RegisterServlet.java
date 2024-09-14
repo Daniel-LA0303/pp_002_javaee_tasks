@@ -2,6 +2,7 @@ package org.mx.project.management.controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -85,26 +86,33 @@ public class RegisterServlet extends HttpServlet {
 			return;
 		}
 
-		Optional<User> userO = userService.findUserByEmail(email);
-		if (userO.isPresent()) {
-			resp.setStatus(HttpServletResponse.SC_CONFLICT);
-			resp.getWriter().write("{\"message\":\"User already exists\"}");
-		} else {
-			String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-			user.setPassword(encryptedPassword);
-			userService.saveUser(user);
+		Optional<User> userO;
+		try {
+			userO = userService.findUserByEmail(email);
+			if (userO.isPresent()) {
+				resp.setStatus(HttpServletResponse.SC_CONFLICT);
+				resp.getWriter().write("{\"message\":\"User already exists\"}");
+			} else {
+				String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+				user.setPassword(encryptedPassword);
+				userService.saveUser(user);
 
-			HttpSession session = req.getSession();
-			session.setAttribute("email", email);
+				HttpSession session = req.getSession();
+				session.setAttribute("email", email);
 
-			Cookie emailCookie = new Cookie("email", email);
-			emailCookie.setMaxAge(60 * 60);
-			emailCookie.setPath("/");
-			resp.addCookie(emailCookie);
+				Cookie emailCookie = new Cookie("email", email);
+				emailCookie.setMaxAge(60 * 60);
+				emailCookie.setPath("/");
+				resp.addCookie(emailCookie);
 
-			resp.setStatus(HttpServletResponse.SC_OK);
-			resp.getWriter().write("{\"message\":\"Registration successful\"}");
+				resp.setStatus(HttpServletResponse.SC_OK);
+				resp.getWriter().write("{\"message\":\"Registration successful\"}");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 }

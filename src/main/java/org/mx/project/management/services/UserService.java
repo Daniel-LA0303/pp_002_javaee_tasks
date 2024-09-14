@@ -1,13 +1,23 @@
 package org.mx.project.management.services;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import org.mx.project.management.models.User;
 
 public interface UserService {
 
-	Optional<User> findUserByEmail(String email);
+	String deleteUser(Long id) throws SQLException;
 
-	void saveUser(User user);
+	List<User> findAllUsers() throws SQLException;
+
+	Optional<User> findUserByEmail(String email) throws SQLException;
+
+	User findUserBYId(Long id) throws SQLException;
+
+	String saveUser(User user) throws SQLException;
+
+	String updateUser(User user) throws SQLException;
 
 }

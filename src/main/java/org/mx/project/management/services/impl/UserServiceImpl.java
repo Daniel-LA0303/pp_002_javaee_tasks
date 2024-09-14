@@ -1,6 +1,8 @@
 package org.mx.project.management.services.impl;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import org.mx.project.management.models.User;
@@ -21,20 +23,38 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public String deleteUser(Long id) throws SQLException {
+		useRepository.delete(id);
+		return "User deleted";
+	}
+
+	@Override
+	public List<User> findAllUsers() throws SQLException {
+		return useRepository.findAll();
+	}
+
+	@Override
 	public Optional<User> findUserByEmail(String email) {
 
 		return userRepo.findUserByEmail(email);
 	}
 
 	@Override
-	public void saveUser(User user) {
+	public User findUserBYId(Long id) throws SQLException {
 
-		try {
-			useRepository.save(user);
-		} catch (Exception e) {
-			// After we work with personal exceptions
-		}
+		return useRepository.findById(id);
+	}
 
+	@Override
+	public String saveUser(User user) throws SQLException {
+		useRepository.save(user);
+		return "User saved";
+	}
+
+	@Override
+	public String updateUser(User user) throws SQLException {
+		useRepository.update(user);
+		return "User updated";
 	}
 
 }

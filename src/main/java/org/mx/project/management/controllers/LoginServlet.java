@@ -2,6 +2,7 @@ package org.mx.project.management.controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -76,26 +77,33 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
-		Optional<User> userO = userService.findUserByEmail(email);
-		if (userO.isEmpty()) {
-			System.out.println("no existe este mail");
-			resp.setStatus(HttpServletResponse.SC_CONFLICT);
-			resp.getWriter().write("{\"message\":\"User does not exists\"}");
-		} else if (BCrypt.checkpw(password, userO.get().getPassword())) {
-			HttpSession session = req.getSession();
-			session.setAttribute("email", email);
+		Optional<User> userO;
+		try {
+			userO = userService.findUserByEmail(email);
 
-			Cookie emailCookie = new Cookie("email", email);
-			emailCookie.setMaxAge(60 * 60);
-			emailCookie.setPath("/");
-			resp.addCookie(emailCookie);
+			if (userO.isEmpty()) {
+				System.out.println("no existe este mail");
+				resp.setStatus(HttpServletResponse.SC_CONFLICT);
+				resp.getWriter().write("{\"message\":\"User does not exists\"}");
+			} else if (BCrypt.checkpw(password, userO.get().getPassword())) {
+				HttpSession session = req.getSession();
+				session.setAttribute("email", email);
 
-			resp.setStatus(HttpServletResponse.SC_OK);
-			resp.getWriter().write("{\"message\":\"Login successful\"}");
-		} else {
-			System.out.println("Contraseña incorrecta");
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			resp.getWriter().write("{\"message\":\"Incorrect password\"}");
+				Cookie emailCookie = new Cookie("email", email);
+				emailCookie.setMaxAge(60 * 60);
+				emailCookie.setPath("/");
+				resp.addCookie(emailCookie);
+
+				resp.setStatus(HttpServletResponse.SC_OK);
+				resp.getWriter().write("{\"message\":\"Login successful\"}");
+			} else {
+				System.out.println("Contraseña incorrecta");
+				resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				resp.getWriter().write("{\"message\":\"Incorrect password\"}");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
