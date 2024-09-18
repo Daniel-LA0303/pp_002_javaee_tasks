@@ -107,6 +107,38 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
+	public List<Project> projectsByUser(Long userId) {
+		List<Project> projects = new ArrayList<>();
+		String sql = "SELECT id, title, description, start_date, end_date, status, created_at, updated_at, user_id "
+				+ "FROM projects_tbl WHERE user_id = ?";
+
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setLong(1, userId);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Project project = new Project();
+					project.setId(rs.getLong("id"));
+					project.setTitle(rs.getString("title"));
+					project.setDescription(rs.getString("description"));
+					project.setStartDate(rs.getDate("start_date").toLocalDate());
+					project.setEndDate(rs.getDate("end_date").toLocalDate());
+					project.setStatus(rs.getBoolean("status"));
+					project.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+					project.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+					project.setUserId(rs.getLong("user_id"));
+					projects.add(project);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// Manejo de excepciones: considera lanzar una excepción personalizada o
+			// registrar el error
+		}
+
+		return projects;
+	}
+
+	@Override
 	public void save(Project project) throws SQLException {
 
 		String sql = "INSERT INTO projects_tbl (title, description, start_date, end_date, status, created_at, updated_at, user_id) "
@@ -119,7 +151,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
 			stmt.setDate(3, Date.valueOf(project.getStartDate()));
 			stmt.setDate(4, Date.valueOf(project.getEndDate()));
-			stmt.setBoolean(5, project.getStatus());
+			stmt.setBoolean(5, false);
 
 			LocalDateTime now = LocalDateTime.now();
 			stmt.setTimestamp(6, Timestamp.valueOf(now));
@@ -149,12 +181,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 				+ "WHERE id = ?";
 
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-			// Establecer los parámetros
 			stmt.setString(1, project.getTitle());
 			stmt.setString(2, project.getDescription());
 
-			// Convertir LocalDate a java.sql.Date
 			stmt.setDate(3, Date.valueOf(project.getStartDate()));
 			stmt.setDate(4, Date.valueOf(project.getEndDate()));
 

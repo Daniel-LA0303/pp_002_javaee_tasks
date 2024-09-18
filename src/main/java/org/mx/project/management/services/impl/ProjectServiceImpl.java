@@ -33,6 +33,12 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
+	public List<Project> findAllProjectsByUserId(Long userId) throws SQLException {
+
+		return projectRepo.projectsByUser(userId);
+	}
+
+	@Override
 	public Project findProjectById(Long id) throws SQLException {
 
 		return projectRepo.findById(id);

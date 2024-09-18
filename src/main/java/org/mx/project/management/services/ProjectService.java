@@ -11,6 +11,8 @@ public interface ProjectService {
 
 	List<Project> findAllProjects() throws SQLException;
 
+	List<Project> findAllProjectsByUserId(Long userId) throws SQLException;
+
 	Project findProjectById(Long id) throws SQLException;
 
 	String saveProject(Project project) throws SQLException;

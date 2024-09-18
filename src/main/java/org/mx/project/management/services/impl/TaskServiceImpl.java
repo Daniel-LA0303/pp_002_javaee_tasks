@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.mx.project.management.models.Task;
 import org.mx.project.management.repositories.GlobalRepository;
+import org.mx.project.management.repositories.TaskRepository;
 import org.mx.project.management.repositories.impl.TaskRespositoryImpl;
 import org.mx.project.management.services.TaskService;
 
@@ -13,11 +14,14 @@ public class TaskServiceImpl implements TaskService {
 
 	private GlobalRepository<Task> tasksRepository;
 
+	private TaskRepository taskRepo;
+
 	/**
 	 * @param projectRepository
 	 */
 	public TaskServiceImpl(Connection connection) {
 		this.tasksRepository = new TaskRespositoryImpl(connection);
+		this.taskRepo = new TaskRespositoryImpl(connection);
 	}
 
 	@Override
@@ -30,6 +34,17 @@ public class TaskServiceImpl implements TaskService {
 	public List<Task> findAllTasks() throws SQLException {
 
 		return tasksRepository.findAll();
+	}
+
+	@Override
+	public List<Task> findAllTasksBYProjectId(Long projectId) throws SQLException {
+
+		return taskRepo.taskByProject(projectId);
+	}
+
+	@Override
+	public List<Task> findAllTasksByUserAsigned(Long userId) throws SQLException {
+		return taskRepo.tasksByUserAsigned(userId);
 	}
 
 	@Override

@@ -113,7 +113,7 @@ public class TaskRespositoryImpl implements TaskRepository {
 			stmt.setString(1, t.getTitle());
 			stmt.setString(2, t.getDescription());
 			stmt.setDate(3, Date.valueOf(t.getDueDate()));
-			stmt.setBoolean(4, t.getStatus());
+			stmt.setBoolean(4, false);
 			stmt.setString(5, t.getPriority());
 
 			LocalDateTime now = LocalDateTime.now();
@@ -137,6 +137,70 @@ public class TaskRespositoryImpl implements TaskRepository {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+
+	@Override
+	public List<Task> taskByProject(Long projectId) {
+		List<Task> tasks = new ArrayList<>();
+		String sql = "SELECT id, title, description, due_date, status, priority, created_at, updated_at, user_assigned_id, project_id "
+				+ "FROM tasks_tbl WHERE project_id = ?";
+
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setLong(1, projectId);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Task task = new Task();
+					task.setId(rs.getLong("id"));
+					task.setTitle(rs.getString("title"));
+					task.setDescription(rs.getString("description"));
+					task.setDueDate(rs.getDate("due_date").toLocalDate());
+					task.setStatus(rs.getBoolean("status"));
+					task.setPriority(rs.getString("priority"));
+					task.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+					task.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+					task.setUserAsignedId(rs.getLong("user_assigned_id"));
+					task.setProjectId(rs.getLong("project_id"));
+					tasks.add(task);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return tasks;
+	}
+
+	@Override
+	public List<Task> tasksByUserAsigned(Long userId) {
+		List<Task> tasks = new ArrayList<>();
+		String sql = "SELECT id, title, description, due_date, status, priority, created_at, updated_at, user_assigned_id, project_id "
+				+ "FROM tasks_tbl WHERE user_assigned_id = ?";
+
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setLong(1, userId);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Task task = new Task();
+					task.setId(rs.getLong("id"));
+					task.setTitle(rs.getString("title"));
+					task.setDescription(rs.getString("description"));
+					task.setDueDate(rs.getDate("due_date").toLocalDate());
+					task.setStatus(rs.getBoolean("status"));
+					task.setPriority(rs.getString("priority"));
+					task.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+					task.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
+					task.setUserAsignedId(rs.getLong("user_assigned_id"));
+					task.setProjectId(rs.getLong("project_id"));
+					tasks.add(task);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// Manejo de excepciones: considera lanzar una excepción personalizada o
+			// registrar el error
+		}
+
+		return tasks;
 	}
 
 	@Override

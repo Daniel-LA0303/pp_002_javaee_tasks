@@ -11,6 +11,10 @@ public interface TaskService {
 
 	List<Task> findAllTasks() throws SQLException;
 
+	List<Task> findAllTasksBYProjectId(Long projectId) throws SQLException;
+
+	List<Task> findAllTasksByUserAsigned(Long userId) throws SQLException;
+
 	Task findTaskById(Long id) throws SQLException;
 
 	String saveTask(Task task) throws SQLException;
