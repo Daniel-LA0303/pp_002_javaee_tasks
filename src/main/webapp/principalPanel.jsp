@@ -1,272 +1,207 @@
 <jsp:include page="layout/header.jsp"/>
 
-<div class="ag-format-container">
-	  <div class="ag-courses_box">
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          UI/Web&amp;Graph design for teenagers 11-17&#160;years old
-	        </div>
-	
-	        <div class="ag-courses-item_date-box">
-	          Start:
-	          <span class="ag-courses-item_date">
-	            04.11.2022
-	          </span>
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          UX/UI Web-Design&#160;+ Mobile Design
-	        </div>
-	
-	        <div class="ag-courses-item_date-box">
-	          Start:
-	          <span class="ag-courses-item_date">
-	            04.11.2022
-	          </span>
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          Annual package "Product+UX/UI+Graph designer&#160;2022"
-	        </div>
-	
-	        <div class="ag-courses-item_date-box">
-	          Start:
-	          <span class="ag-courses-item_date">
-	            04.11.2022
-	          </span>
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          Graphic Design
-	        </div>
-	
-	        <div class="ag-courses-item_date-box">
-	          Start:
-	          <span class="ag-courses-item_date">
-	            04.11.2022
-	          </span>
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          Motion Design
-	        </div>
-	
-	        <div class="ag-courses-item_date-box">
-	          Start:
-	          <span class="ag-courses-item_date">
-	            30.11.2022
-	          </span>
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          Front-end development&#160;+ jQuery&#160;+ CMS
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg">
-	        </div>
-	        <div class="ag-courses-item_title">
-	          Digital Marketing
-	        </div>
-	      </a>
-	    </div>
-	
-	    <div class="ag-courses_item">
-	      <a href="#" class="ag-courses-item_link">
-	        <div class="ag-courses-item_bg"></div>
-	
-	        <div class="ag-courses-item_title">
-	          Interior Design
-	        </div>
-	
-	        <div class="ag-courses-item_date-box">
-	          Start:
-	          <span class="ag-courses-item_date">
-	            31.10.2022
-	          </span>
-	        </div>
-	      </a>
-	    </div>
-	
-	  </div>
+	<div class="header-panel">
+		<h1 class="mt-3">My projects</h1>
+		<!-- modal section -->
+		<button class="open-modal-btn new-project">New Project</button>    
 	</div>
 
+
+	<!-- Cards section -->
+	<div class="ag-format-container">
+		<!-- show cards projects -->
+		<div class="ag-courses_box" id="projects-container">
+	    <!-- <div id="" class="projects-container"></div> -->
+	  	</div>
+	</div>
 	
+	<h1 class="mt-3">Projects I am assigned to</h1>
+	
+	<!-- Cards section -->
+	<div class="ag-format-container">
+		<!-- show cards projects -->
+		<div class="ag-courses_box" id="projects-container-to-asigned">
+	    <!-- <div id="" class="projects-container"></div> -->
+	  	</div>
+	</div>
+
+	<!-- Modal -->
+ 	<div class="modal-overlay">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close-btn">&times;</span>
+			</div>
+			<div class="modal-body">	
+				<div class="form-container ">
+					<h3 class="text-center">Create Project</h1>
+					<form action="#" 
+					
+					>
+						<input type="hidden" id="projectId" name="taskId" value="">
+						<div class="form-group">
+							<label for="title" class="form-label">Title</label>
+							<input type="text" id="title" name="title" maxlength="100" placeholder="Enter the event title" class="form-input" required>
+						</div>
 		
-    
-<!-- Tarea 1: Prioridad Alta -->
-<div class="task-card high">
-    <div class="ribbon high">High</div>
-    <h2 class="task-title">Finalizar Proyecto Angular</h2>
-    <p class="task-desc">
-        Completar los últimos módulos, probar y desplegar el proyecto en producción.
-    </p>
-    <div class="task-details">
-        <p><strong>Fecha límite:</strong> 20 de septiembre de 2024</p>
-        <p><strong>Prioridad:</strong> Alta</p>
-    </div>
-    <div class="task-actions">
-        <button class="btn-complete">Marcar como Completa</button>
-        <button class="btn-delete">Eliminar</button>
-    </div>
-</div>
-
-<!-- Tarea 2: Prioridad Media -->
-<div class="task-card medium">
-    <div class="ribbon medium">Medium</div>
-    <h2 class="task-title">Revisar Código del Backend</h2>
-    <p class="task-desc">
-        Revisar el código de la API, optimizar las consultas y actualizar la documentación.
-    </p>
-    <div class="task-details">
-        <p><strong>Fecha límite:</strong> 25 de septiembre de 2024</p>
-        <p><strong>Prioridad:</strong> Media</p>
-    </div>
-    <div class="task-actions">
-        <button class="btn-complete">Marcar como Completa</button>
-        <button class="btn-delete">Eliminar</button>
-    </div>
-</div>
-
-<!-- Tarea 3: Prioridad Baja -->
-<div class="task-card low">
-    <div class="ribbon low">Low</div>
-    <h2 class="task-title">Actualizar Página Personal</h2>
-    <p class="task-desc">
-        Añadir proyectos recientes al portafolio personal y actualizar la sección de contacto.
-    </p>
-    <div class="task-details">
-        <p><strong>Fecha límite:</strong> 30 de septiembre de 2024</p>
-        <p><strong>Prioridad:</strong> Baja</p>
-    </div>
-    <div class="task-actions">
-        <button class="btn-complete">Marcar como Completa</button>
-        <button class="btn-delete">Eliminar</button>
-    </div>
-</div>
-
-<!-- Tarea 4: Prioridad Alta - Completada -->
-<div class="task-card high completed">
-    <div class="ribbon high">High</div>
-    <h2 class="task-title">Finalizar Proyecto Angular</h2>
-    <p class="task-desc">
-        Completar los últimos módulos, probar y desplegar el proyecto en producción.
-    </p>
-    <div class="task-details">
-        <p><strong>Fecha límite:</strong> 20 de septiembre de 2024</p>
-        <p><strong>Prioridad:</strong> Alta</p>
-    </div>
-    <div class="task-actions">
-        <button class="btn-complete" disabled>Completado</button>
-        <button class="btn-delete">Eliminar</button>
-    </div>
-</div>
-
-
-
-		<button class="open-modal-btn">Open Modal</button>
-        <!-- Modal -->
-        <div class="modal-overlay">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Modal Title</h2>
-                    <span class="close-btn">&times;</span>
-                </div>
-                <div class="modal-body">
-					<div class="form-container">
-		                <h1>Create Project</h1>
-		                <form action="#" method="POST">
-		                    <div class="form-group">
-		                        <label for="title" class="form-label">Title</label>
-		                        <input type="text" id="title" name="title" maxlength="100" placeholder="Enter the event title" class="form-input" required>
-		                    </div>
+						<div class="form-group">
+							<label for="description" class="form-label">Description</label>
+							<textarea id="description" name="description" placeholder="Enter event description" class="form-input" required></textarea>
+		                </div>
 		
-		                    <div class="form-group">
-		                        <label for="description" class="form-label">Description</label>
-		                        <textarea id="description" name="description" placeholder="Enter event description" class="form-input" required></textarea>
-		                    </div>
+		                <div class="form-group">
+		    	            <label for="start_date" class="form-label">Start Date</label>
+		                    <input type="date" id="start_date" name="start_date" class="form-input" required>
+		                </div>
 		
-		                    <div class="form-group">
-		                        <label for="start_date" class="form-label">Start Date</label>
-		                        <input type="date" id="start_date" name="start_date" class="form-input" required>
-		                    </div>
+		                <div class="form-group">
+		                	<label for="end_date" class="form-label">End Date</label>
+		                    <input type="date" id="end_date" name="end_date" class="form-input" required>
+		           	    </div>
 		
-		                    <div class="form-group">
-		                        <label for="end_date" class="form-label">End Date</label>
-		                        <input type="date" id="end_date" name="end_date" class="form-input" required>
-		                    </div>
-		
-		                    <button type="button" class="btn" id="newProject">Submit</button>
-		                </form>
-		            </div>
-                </div>
-            </div>
-        </div>
-
-<div class="user-card">
-                    <div class="user-card-header">
-                        User Information
-                    </div>
-                    <div class="user-card-body">
-                        <h5 class="card-title">John Doe</h5>
-                        <p class="card-text">johndoe@example.com</p>
-                        <div class="user-card-buttons">
-                            <button class="btn btn-add">Add to Project</button>
-                            <button class="btn btn-remove">Remove from Project</button>
-                        </div>
-                    </div>
-                </div>
-    
-	<h1>Hola</h1>
+		                <button type="button" class="btn" id="newProject">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 	<button id="logoutButton">Log Out</button>
 
     <script type="text/javascript">
         $(document).ready(function() {
         	
-        	$('#newProject').click(function(event){
-        		event.preventDefault();
-        		
-        		var dateP = $('#start_date').val();
-        		console.log(dateP);
-        	});
+            const email = getCookie('email');
+            const userId = getCookie('userId');
+            console.log("Email:", email);
+            console.log("UserId", parseInt(userId));
+
+            let projects;
         	
+        	//get projetcs
+		    var url = "${pageContext.request.contextPath}/projects-user?email=" + encodeURIComponent(email);
+		    $.ajax({
+		        url: url,
+		        type: 'GET',
+		        success: function(response) {
+		        	 console.log(response);  
+		        	 
+		        	 
+		        	projects = response.projects;
+		        	 
+		        	 var projectsAsigned = response.projectsAsigned;
+		        	 
+		                let cards = '';
+		                projects.forEach(project => {
+		                    var title = project.title;
+		                    var description = project.description;
+		                    var startDate = project.startDate;
+		                    var projectId = project.id;
+		                   
+		                    cards += '<div class="ag-courses_item">' +
+		                    '<div class="ag-courses-item_link">' +
+		                        '<a href="${pageContext.request.contextPath}/project?id=' + projectId + '" class="">' +
+		                            '<div class="ag-courses-item_bg"></div>' +
+		                            '<div class="ag-courses-item_title">' +
+		                                title +
+		                            '</div>' +
+		                            '<div class="ag-courses-item_date-box">' +
+		                                'Start: ' +
+		                                '<span class="ag-courses-item_date">' +
+		                                    startDate +
+		                                '</span>' +
+		                            '</div>' +
+		                            '<div class="ag-courses-item_description">' +
+		                                description +
+		                            '</div>' +
+		                        '</a>' +
+		                        '<div class="ag-courses-item_actions">' +
+		                            '<button class="edit-project-btn" data-project-id="' + projectId + '">Editar</button>' +
+		                            '<button class="delete-project-btn" data-project-id="' + projectId + '">Eliminar</button>' +
+		                        '</div>' +
+		                    '</div>' +
+		                '</div>';
+
+		                });
+		                $('#projects-container').html(cards);
+		                
+		                cards = '';
+		                projectsAsigned.forEach(project => {
+		                    var title = project.title;
+		                    var description = project.description;
+		                    var startDate = project.startDate;
+		                    var projectId = project.id;
+		                   
+		                    cards += '<div class="ag-courses_item">' +
+		                    			'<a href="${pageContext.request.contextPath}/project?id=' + projectId + '" class="ag-courses-item_link">' +
+		                                    '<div class="ag-courses-item_bg"></div>' +
+		                                    '<div class="ag-courses-item_title">' +
+		                                        title +
+		                                    '</div>' +
+		                                    '<div class="ag-courses-item_date-box">' +
+		                                        'Start: ' +
+		                                        '<span class="ag-courses-item_date">' +
+		                                            startDate +
+		                                        '</span>' +
+		                                    '</div>' +
+		                                    '<div class="ag-courses-item_description">' +
+		                                        description +
+		                                    '</div>' +
+		                                '</a>' +
+		                            '</div>';
+		                });
+		                $('#projects-container-to-asigned').html(cards);
+		        },
+		        error: function(xhr, status, error) {
+		            console.error("Error en la solicitud:", error);
+		        }
+		    });
+		    
+		    $('#projects-container').on('click', '.delete-project-btn', function() {
+		        const projectId = $(this).data('project-id');
+		        console.log("proyecto a eliminar: ", projectId);
+		        
+	            if (!confirm("¿Estás seguro de que deseas eliminar esta tarea?")) {
+	                return;
+	            }
+	            $.ajax({
+	            	url: '${pageContext.request.contextPath}/projects',       
+        	        type: 'DELETE',           
+        	        contentType: 'application/json', 
+        	        dataType: 'json',       
+        	        data: JSON.stringify({  
+        	        	 projectId: projectId,
+        	        	 userId: parseInt(userId),
+        	        }),
+	                success: function(response) {
+	                    alert("Proyecto eliminada correctamente.");
+
+	                    location.reload();
+					},
+	                error: function(xhr, status, error) {
+	                    alert("Hubo un error al intentar eliminar la tarea. Inténtalo de nuevo.");
+	                    console.error("Error en la eliminación:", error);
+	                }
+	            });
+		    });
+		    
+		    $('#projects-container').on('click', '.edit-project-btn', function() {
+		        const projectId = $(this).data('project-id');
+		        console.log("proyecto a editar: ", projectId);
+		        
+	           	const project = projects.find(p => p.id === projectId);
+	           
+	           	$('#projectId').val(project.id);  
+	       		$('#title').val(project.title);
+	    		$('#description').val(project.description);
+	    		$('#start_date').val(project.startDate);
+	    		$('#end_date').val(project.endDate);
+	    		$('.modal-overlay').fadeIn();
+	           console.log(project);
+	           
+	           
+		    });
+        	
+        	//logout session
             $('#logoutButton').click(function() {
             	
             	console.log("exit");
@@ -274,32 +209,115 @@
                     url: '${pageContext.request.contextPath}/logout',
                     type: 'GET',
                     success: function() {
-                        // Redirigir a la página de inicio o de login después de cerrar sesión
+                        
                         window.location.href = '${pageContext.request.contextPath}/login.html';
                     },
                     error: function(xhr, status, error) {
-                        // Manejo de errores
                         console.error("Error en el cierre de sesión:", error);
                     }
                 });
             });
+        	
+            $('.new-project').on('click', function() {
+            	$('#projectId').val('');  
+	       		$('#title').val('');
+	    		$('#description').val('');
+	    		$('#start_date').val('');
+	    		$('#end_date').val('');
+            	$('.error-message').remove();
+                $('.modal-overlay').fadeIn();
+            });
             
-            //modal
+            // modal section
+            // open modal
             $('.open-modal-btn').on('click', function() {
+            	$('.error-message').remove();
                 $('.modal-overlay').fadeIn();
             });
 
-            // Cerrar el modal al hacer clic en el botón de cerrar (X)
+            // close modal
             $('.close-btn').on('click', function() {
+            	$('.error-message').remove();
                 $('.modal-overlay').fadeOut();
             });
 
-            // Cerrar el modal al hacer clic en el fondo gris
+            // close modal dinamic
             $('.modal-overlay').on('click', function(e) {
-                if (e.target === this) { // Solo cerrar si haces clic fuera del contenido
+            	$('.error-message').remove();
+                if (e.target === this) { 
                     $(this).fadeOut();
                 }
             });
+            
+            // post a new project
+        	$('#newProject').click(function(event){
+        		event.preventDefault();
+        		
+        		var projectId = $('#projectId').val();  
+        		var title = $('#title').val();
+        		var description = $('#description').val();
+        		var dateStart = $('#start_date').val();
+        		var dateEnd = $('#end_date').val();
+        		
+        		console.log(dateStart, dateEnd, title, description, projectId);
+        		
+        		let data = {};
+        		data.title = title;
+	            data.description = description;
+	            data.startDate = dateStart;
+	            data.endDate = dateEnd;
+	            data.userId = parseInt(userId);
+	            
+	            var method = projectId ? 'PUT' : 'POST';
+	            
+	            if (projectId) {
+	                console.log("Entra a editar, método:", method);
+	                data.projectId = parseInt(projectId);  
+	                console.log("Datos para editar:", data);
+	            } else {
+	                console.log("Entra a nuevo, método:", method);
+	                console.log("Datos para crear:", data);
+	            }
+        		
+        		$.ajax({
+        	        url: '${pageContext.request.contextPath}/projects',       
+        	        type: method,           
+        	        contentType: 'application/json', 
+        	        dataType: 'json',       
+        	        data: JSON.stringify(data),
+        	        success: function(response) {
+        	            console.log("Proyecto creado con éxito:", response);
+        	            setTimeout(function() {
+        	                window.scrollTo(0, 0);
+        	            }, 100);
+        	            location.reload();
+        	            window.scrollTo(0, 0);
+        	        },
+        	        error: function(xhr, status, error) {
+        	            console.error("Error al crear el proyecto:", error);
+        	            
+        	            console.error("Error al crear el proyecto:", error);
+        	            var errors = JSON.parse(xhr.responseText);
+        	            console.error("Errores recibidos:", errors);
+ 
+        	            $('.error-message').remove();
+        	            for (var field in errors) {
+			                var errorMessage = errors[field];
+			                
+			                
+			                var inputId = field;
+			                if (field === "startDate") inputId = "start_date";
+			                if (field === "endDate") inputId = "end_date";
+			                
+			                
+			                $('#' + inputId).after('<span class="error-message" style="color: red;">' + errorMessage + '</span>');
+			            }
+        	        }
+        	    });
+        		
+        		
+        	});
+            
         });
     </script>
 <jsp:include page="layout/footer.jsp"/>

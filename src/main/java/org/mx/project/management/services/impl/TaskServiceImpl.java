@@ -60,9 +60,21 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public String updateTask(Task task) throws SQLException {
+	public String updateTask(Task task) throws SQLException {		
 		tasksRepository.update(task);
 		return "Task updated";
+	}
+
+	@Override
+	public String setTaskStatusToTrue(Long id) throws SQLException {
+		taskRepo.setTaskStatusToTrue(id);
+		return "Task complete";
+	}
+
+	@Override
+	public void removeUserFromProject(Long userId, Long projectId) throws SQLException {
+		taskRepo.removeUserFromProject(userId, projectId);
+		
 	}
 
 }

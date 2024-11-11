@@ -1,17 +1,13 @@
-package org.mx.project.management.controllers.projects;
+package org.mx.project.management.controllers.services.tasks;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.List;
 
 import org.mx.project.management.config.dateConfig.GsonConfig;
 import org.mx.project.management.config.jsonConverter.JsonUtils;
-import org.mx.project.management.models.Project;
-import org.mx.project.management.models.User;
-import org.mx.project.management.services.ProjectService;
-import org.mx.project.management.services.UserService;
-import org.mx.project.management.services.impl.ProjectServiceImpl;
-import org.mx.project.management.services.impl.UserServiceImpl;
+import org.mx.project.management.models.Task;
+import org.mx.project.management.services.TaskService;
+import org.mx.project.management.services.impl.TaskServiceImpl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -22,8 +18,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet({ "/projects-user-id" })
-public class GetAllProjecstByUserIdServlet extends HttpServlet {
+@WebServlet({ "/task-by-id" })
+public class GetTaskById extends HttpServlet {
 
 	/**
 	 * 
@@ -39,8 +35,7 @@ public class GetAllProjecstByUserIdServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Connection conn = (Connection) req.getAttribute("conn");
-		ProjectService projectService = new ProjectServiceImpl(conn);
-		UserService userService = new UserServiceImpl(conn);
+		TaskService taskService = new TaskServiceImpl(conn);
 
 		System.out.println("invocado");
 
@@ -48,27 +43,26 @@ public class GetAllProjecstByUserIdServlet extends HttpServlet {
 		resp.setCharacterEncoding("UTF-8");
 
 		JsonObject jsonObject = JsonUtils.parseJsonRequest(req);
-		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
+		// Long userId = jsonObject.get("userId").getAsLong();
+		Long taskId = jsonObject.has("taskId") ? jsonObject.get("taskId").getAsLong() : null;
 
-		System.out.println("userId" + userId);
+		System.out.println("taskId" + taskId);
 
 		try {
+			Task task = taskService.findTaskById(taskId);
 
-			User user = userService.findUserBYId(userId);
-			if (user == null) {
+			if (task == null) {
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
-				resp.getWriter().write("{\"message\":\"User not found\"}");
+				resp.getWriter().write("{\"message\":\"Task not found\"}");
 				return;
 			}
-
-			List<Project> projects = projectService.findAllProjectsByUserId(userId);
 
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
 
 			Gson gson = GsonConfig.createGson();
-			String json = gson.toJson(projects);
+			String json = gson.toJson(task);
 			resp.getWriter().write(json);
 
 		} catch (Exception e) {
@@ -76,6 +70,7 @@ public class GetAllProjecstByUserIdServlet extends HttpServlet {
 			resp.getWriter().write("{\"error\": \"Database error occurred\"}");
 			e.printStackTrace();
 		}
+
 	}
 
 }

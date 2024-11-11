@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers.tasks;
+package org.mx.project.management.controllers.services.tasks;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -175,38 +175,33 @@ public class TaskServlet extends HttpServlet {
 		Long projectId = jsonObject.get("projectId").getAsLong();
 		Long userProjectId = jsonObject.has("userProjectId") ? jsonObject.get("userProjectId").getAsLong() : null;
 
+		System.out.println("***********se ejecuto post ");
 		System.out.println("Title: " + title);
 		System.out.println("Description: " + description);
 		System.out.println("Due Date: " + dueDate);
 		System.out.println("Priority: " + priority);
-		System.out.println("User Asigned ID: " + (userAsignedId != null ? userAsignedId : "Not provided"));
+		System.out.println("User Assigned ID: " + userAsignedId);
 		System.out.println("Project ID: " + projectId);
-		System.out.println("User Project ID: " + (userProjectId != null ? userProjectId : "Not provided"));
+		System.out.println("User Project ID: " + userProjectId);
 
-		if (userProjectId == null) {
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			resp.setContentType("application/json");
-			resp.getWriter().write("{\"message\":\"You are not authorized to update this project\"}");
-			return;
-		}
-
+		
 		// Manejo de errores
 		Map<String, String> errors = new HashMap<>();
 
-		if (title == null || title.isBlank()) {
-			errors.put("title", "Title is required");
+		if (title == null || title.trim().isEmpty()) {
+		    errors.put("title", "Title is required");
 		}
 
-		if (description == null || description.isBlank()) {
-			errors.put("description", "Description is required");
+		if (description == null || description.trim().isEmpty()) {
+		    errors.put("description", "Description is required");
 		}
 
-		if (dueDate == null || dueDate.isBlank()) {
-			errors.put("dueDate", "Due date is required");
+		if (dueDate == null || dueDate.trim().isEmpty()) {
+		    errors.put("dueDate", "Due date is required");
 		}
 
-		if (priority == null || priority.isBlank()) {
-			errors.put("priority", "Priority is required");
+		if (priority == null || priority.trim().isEmpty()) {
+		    errors.put("priority", "Priority is required");
 		}
 
 		if (!errors.isEmpty()) {
@@ -286,13 +281,14 @@ public class TaskServlet extends HttpServlet {
 		String description = jsonObject.get("description").getAsString();
 		String dueDate = jsonObject.get("dueDate").getAsString();
 		String priority = jsonObject.get("priority").getAsString();
-		Boolean status = jsonObject.has("status") ? jsonObject.get("status").getAsBoolean() : null;
+		//Boolean status = jsonObject.has("status") ? jsonObject.get("status").getAsBoolean() : null;
 
 		Long userAsignedId = jsonObject.has("userAsignedId") ? jsonObject.get("userAsignedId").getAsLong() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
 		Long userProjectId = jsonObject.has("userProjectId") ? jsonObject.get("userProjectId").getAsLong() : null;
 		Long taskToUpdateId = jsonObject.has("taskToUpdateId") ? jsonObject.get("taskToUpdateId").getAsLong() : null;
-
+		
+		System.out.println("**************se ejecuto PUT");
 		System.out.println("Title: " + title);
 		System.out.println("Description: " + description);
 		System.out.println("Due Date: " + dueDate);
@@ -301,7 +297,7 @@ public class TaskServlet extends HttpServlet {
 		System.out.println("Project ID: " + projectId);
 		System.out.println("User Project ID: " + (userProjectId != null ? userProjectId : "Not provided"));
 		System.out.println("Task to update ID: " + (taskToUpdateId != null ? taskToUpdateId : "Not provided"));
-		System.out.println("status: " + (status != null ? status : "Not provided"));
+		//System.out.println("status: " + (status != null ? status : "Not provided"));
 
 		if (userProjectId == null) {
 			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -310,28 +306,24 @@ public class TaskServlet extends HttpServlet {
 			return;
 		}
 
-		// Manejo de errores
 		Map<String, String> errors = new HashMap<>();
 
-		if (title == null || title.isBlank()) {
-			errors.put("title", "Title is required");
+		if (title == null || title.trim().isEmpty()) {
+		    errors.put("title", "Title is required");
 		}
 
-		if (description == null || description.isBlank()) {
-			errors.put("description", "Description is required");
+		if (description == null || description.trim().isEmpty()) {
+		    errors.put("description", "Description is required");
 		}
 
-		if (dueDate == null || dueDate.isBlank()) {
-			errors.put("dueDate", "Due date is required");
+		if (dueDate == null || dueDate.trim().isEmpty()) {
+		    errors.put("dueDate", "Due date is required");
 		}
 
-		if (priority == null || priority.isBlank()) {
-			errors.put("priority", "Priority is required");
+		if (priority == null || priority.trim().isEmpty()) {
+		    errors.put("priority", "Priority is required");
 		}
 
-		if (status == null) {
-			errors.put("status", "Staus is required");
-		}
 
 		if (!errors.isEmpty()) {
 			resp.setContentType("application/json");
@@ -381,11 +373,13 @@ public class TaskServlet extends HttpServlet {
 			updateTask.setDueDate(LocalDate.parse(dueDate));
 			updateTask.setPriority(priority);
 			updateTask.setUserAsignedId(userAsigned.getId());
-			updateTask.setStatus(status);
+			updateTask.setStatus(taskToUpdate.getStatus());
 			updateTask.setProjectId(p.getId());
 
+			
 			taskService.updateTask(updateTask);
 
+			
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
 			resp.getWriter().write("{\"message\":\"Task updated successfully\"}");

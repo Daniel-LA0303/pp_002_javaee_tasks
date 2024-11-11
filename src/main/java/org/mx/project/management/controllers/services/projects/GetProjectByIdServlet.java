@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers.projects;
+package org.mx.project.management.controllers.services.projects;
 
 import java.io.IOException;
 import java.sql.Connection;

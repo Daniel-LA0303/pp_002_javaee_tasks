@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Optional<User> findUserByEmail(String email) {
-
+				
 		return userRepo.findUserByEmail(email);
 	}
 
@@ -55,6 +55,12 @@ public class UserServiceImpl implements UserService {
 	public String updateUser(User user) throws SQLException {
 		useRepository.update(user);
 		return "User updated";
+	}
+
+	@Override
+	public List<User> searchUsers(String keyword) throws SQLException {
+		
+		return userRepo.searchUsers(keyword);
 	}
 
 }

@@ -15,7 +15,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebFilter({ "/principal", "/principal.html" })
+@WebFilter({ "/principal", "/principal.html", "/projects", "/project", "/project.html", "/get-info-by-project" })
 public class AuthFilter implements Filter {
 
 	@Override
@@ -25,9 +25,6 @@ public class AuthFilter implements Filter {
 		AuthService authService = new AuthServiceImpl();
 
 		Optional<String> emailUser = authService.getCookieUser((HttpServletRequest) request);
-
-		System.out.println(emailUser);
-		System.out.println(emailUser.isPresent());
 
 		if (emailUser.isPresent()) {
 			chain.doFilter(request, response); // continue

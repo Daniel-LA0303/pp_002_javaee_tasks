@@ -104,11 +104,12 @@ public class UserRepositoryImpl implements UserRepository {
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
 			stmt.setString(1, email);
-
+			System.out.println("Buscando usuario con email: " + email); 
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 
 					user = new User();
+					user.setId(rs.getLong("id"));
 					user.setName(rs.getString("name"));
 					user.setEmail(rs.getString("email"));
 					user.setPassword(rs.getString("password"));
@@ -119,7 +120,7 @@ public class UserRepositoryImpl implements UserRepository {
 			}
 
 		} catch (Exception e) {
-
+			 e.printStackTrace();
 		}
 
 		return Optional.ofNullable(user);
@@ -169,6 +170,34 @@ public class UserRepositoryImpl implements UserRepository {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+
+	@Override
+	public List<User> searchUsers(String keyword) throws SQLException {
+		
+		System.out.println("****" + keyword);
+		
+		 String sql = "SELECT * FROM users_tbl WHERE name LIKE CONCAT('%', ?, '%') OR email LIKE CONCAT('%', ?, '%')";
+		    
+		    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+		        stmt.setString(1, keyword);
+		        stmt.setString(2, keyword);
+
+		        ResultSet rs = stmt.executeQuery();
+		        
+		        List<User> users = new ArrayList<>();
+		        while (rs.next()) {
+		            User user = new User();
+		            user.setId(rs.getLong("id"));
+		            user.setName(rs.getString("name"));
+		            user.setEmail(rs.getString("email"));
+		            user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+		            user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+		            users.add(user);
+		        }
+		        
+		        return users;
+		    }
 	}
 
 }

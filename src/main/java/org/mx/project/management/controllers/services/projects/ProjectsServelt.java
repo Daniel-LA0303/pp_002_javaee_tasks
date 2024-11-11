@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers.projects;
+package org.mx.project.management.controllers.services.projects;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -47,15 +47,13 @@ public class ProjectsServelt extends HttpServlet {
 
 		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
-
+		
+		
+		System.out.println("**** delte projetc");
+		
 		System.out.println(userId);
+		System.out.println(projectId);
 
-		if (userId == null) {
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			resp.setContentType("application/json");
-			resp.getWriter().write("{\"message\":\"You are not authorized to post\"}");
-			return;
-		}
 
 		try {
 			Project project = projectService.findProjectById(projectId);
@@ -71,7 +69,8 @@ public class ProjectsServelt extends HttpServlet {
 				resp.setStatus(HttpServletResponse.SC_OK);
 
 				Gson gson = new Gson();
-				String message = projectService.deleteProject(project.getUserId());
+				String message = projectService.deleteProject(project.getId());
+				System.out.println(message);
 				String json = gson.toJson(message);
 				resp.getWriter().write(json);
 			}
@@ -91,7 +90,7 @@ public class ProjectsServelt extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Connection conn = null;
-		System.out.println("invocado");
+		System.out.println("invocado");//
 
 		try {
 			conn = (Connection) req.getAttribute("conn");
@@ -148,34 +147,37 @@ public class ProjectsServelt extends HttpServlet {
 		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
 
 		System.out.println("Received Parameters: " + title + ", " + description + ", " + startDateStr + ", "
-				+ endDateStr + ", " + userId);
+				+ endDateStr 
+				+ ", " + userId
+				);
 		Map<String, String> errors = new HashMap<>();
 
-		if (title == null || title.isBlank()) {
-			errors.put("title", "Title is required");
+		if (title == null || title.trim().isEmpty()) {
+		    errors.put("title", "Title is required");
 		}
 
-		if (description == null || description.isBlank()) {
-			errors.put("description", "Description is required");
+		if (description == null || description.trim().isEmpty()) {
+		    errors.put("description", "Description is required");
 		}
 
-		if (startDateStr == null || startDateStr.isBlank()) {
-			errors.put("startDate", "Start Date is required");
+		if (startDateStr == null || startDateStr.trim().isEmpty()) {
+		    errors.put("startDate", "Start Date is required");
 		}
 
-		if (endDateStr == null || endDateStr.isBlank()) {
-			errors.put("endDate", "End Date is required");
+		if (endDateStr == null || endDateStr.trim().isEmpty()) {
+		    errors.put("endDate", "End Date is required");
 		}
 
-		if (userId == null) {
+		/*if (userId == null) {
 			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			resp.setContentType("application/json");
 			resp.getWriter().write("{\"message\":\"You are not authorized to post\"}");
 			return;
-		}
+		}*/
 
 		if (!errors.isEmpty()) {
 			resp.setContentType("application/json");
+			// status 400
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().write(new Gson().toJson(errors));
 			return;
@@ -191,11 +193,11 @@ public class ProjectsServelt extends HttpServlet {
 		try {
 			projectService.saveProject(project);
 		} catch (SQLException e) {
-
 			e.printStackTrace();
 		}
 
 		resp.setContentType("application/json");
+		//status 201
 		resp.setStatus(HttpServletResponse.SC_CREATED);
 		resp.getWriter().write("{\"message\":\"Project created successfully\"}");
 	}
@@ -222,7 +224,7 @@ public class ProjectsServelt extends HttpServlet {
 		String endDateStr = jsonObject.get("endDate").getAsString();
 		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
 
-		Boolean status = jsonObject.has("status") ? jsonObject.get("status").getAsBoolean() : null;
+		//Boolean status = jsonObject.has("status") ? jsonObject.get("status").getAsBoolean() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
 
 		// quitar
@@ -231,30 +233,26 @@ public class ProjectsServelt extends HttpServlet {
 		System.out.println("Start Date: " + startDateStr);
 		System.out.println("End Date: " + endDateStr);
 		System.out.println("User ID: " + userId);
-		System.out.println("Status: " + status);
+		//System.out.println("Status: " + status);
 		System.out.println("Project ID: " + projectId);
 
 		// Manejo de errores
 		Map<String, String> errors = new HashMap<>();
 
-		if (title == null || title.isBlank()) {
-			errors.put("title", "Title is required");
+		if (title == null || title.trim().isEmpty()) {
+		    errors.put("title", "Title is required");
 		}
 
-		if (description == null || description.isBlank()) {
-			errors.put("description", "Description is required");
+		if (description == null || description.trim().isEmpty()) {
+		    errors.put("description", "Description is required");
 		}
 
-		if (startDateStr == null || startDateStr.isBlank()) {
-			errors.put("startDate", "Start Date is required");
+		if (startDateStr == null || startDateStr.trim().isEmpty()) {
+		    errors.put("startDate", "Start Date is required");
 		}
 
-		if (endDateStr == null || endDateStr.isBlank()) {
-			errors.put("endDate", "End Date is required");
-		}
-
-		if (status == null) {
-			errors.put("status", "Staus is required");
+		if (endDateStr == null || endDateStr.trim().isEmpty()) {
+		    errors.put("endDate", "End Date is required");
 		}
 
 		if (userId == null) {
@@ -290,13 +288,13 @@ public class ProjectsServelt extends HttpServlet {
 
 			System.out.println("Project found: " + p.getTitle());
 			Project project = new Project();
-			project.setId(projectId);
+			project.setId(p.getId());
 			project.setTitle(title);
 			project.setDescription(description);
 			project.setStartDate(LocalDate.parse(startDateStr));
 			project.setEndDate(LocalDate.parse(endDateStr));
 			project.setUserId(userId);
-			project.setStatus(status);
+			project.setStatus(p.getStatus());
 
 			projectService.updateProject(project);
 

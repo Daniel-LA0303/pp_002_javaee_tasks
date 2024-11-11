@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mx.project.management.dto.UserByProjectDTO;
 import org.mx.project.management.models.Project;
 import org.mx.project.management.repositories.GlobalRepository;
 import org.mx.project.management.repositories.ProjectRepository;
@@ -23,6 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public String deleteProject(Long id) throws SQLException {
+		System.out.println("*****service delte");
 		projectRepository.delete(id);
 		return "Project deleted";
 	}
@@ -56,6 +58,26 @@ public class ProjectServiceImpl implements ProjectService {
 	public String updateProject(Project project) throws SQLException {
 		projectRepository.update(project);
 		return "Project updated";
+	}
+
+	@Override
+	public List<UserByProjectDTO> getUsersAsignedToProject(Long id) throws SQLException {
+		return projectRepo.getUsersAsignedToProject(id);
+	}
+
+	@Override
+	public List<Project> getProjectsByUserAigned(Long id) throws SQLException {
+		return projectRepo.getProjectsByUserAsigned(id);
+	}
+
+	@Override
+	public void assignUserToProject(Long userId, Long projectId) throws SQLException {
+		projectRepo.assignUserToProject(userId, projectId);
+	}
+
+	@Override
+	public void removeUserFromProject(Long userId, Long projectId) throws SQLException {
+		projectRepo.removeUserFromProject(userId, projectId);
 	}
 
 }

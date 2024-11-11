@@ -1,6 +1,12 @@
-package org.mx.project.management.controllers;
+package org.mx.project.management.controllers.views;
 
 import java.io.IOException;
+import java.sql.Connection;
+
+import org.mx.project.management.services.ProjectService;
+import org.mx.project.management.services.UserService;
+import org.mx.project.management.services.impl.ProjectServiceImpl;
+import org.mx.project.management.services.impl.UserServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,6 +31,12 @@ public class PrincipalPanelServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		Connection conn = (Connection) req.getAttribute("conn");
+		ProjectService projectService = new ProjectServiceImpl(conn);
+		
+		
+		
+		
 		getServletContext().getRequestDispatcher("/principalPanel.jsp").forward(req, resp);
 	}
 

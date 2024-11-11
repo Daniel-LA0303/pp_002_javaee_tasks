@@ -19,5 +19,7 @@ public interface UserService {
 	String saveUser(User user) throws SQLException;
 
 	String updateUser(User user) throws SQLException;
+	
+	List<User> searchUsers(String keyword) throws SQLException;
 
 }

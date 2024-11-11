@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -196,8 +197,7 @@ public class TaskRespositoryImpl implements TaskRepository {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			// Manejo de excepciones: considera lanzar una excepción personalizada o
-			// registrar el error
+	
 		}
 
 		return tasks;
@@ -205,35 +205,96 @@ public class TaskRespositoryImpl implements TaskRepository {
 
 	@Override
 	public void update(Task t) throws SQLException {
-		String sql = "UPDATE tasks_tbl SET title = ?, description = ?, due_date = ?, status = ?, priority = ?, updated_at = ?, user_assigned_id = ?, project_id = ? "
-				+ "WHERE id = ?";
+		
+	
+	    // SQL de actualización
+	    String sql = "UPDATE tasks_tbl SET title = ?, description = ?, due_date = ?, status = ?, priority = ?, updated_at = ?, user_assigned_id = ?, project_id = ? "
+	            + "WHERE id = ?";
 
-		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+	    // Comienza a preparar la sentencia SQL
+	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-			stmt.setString(1, t.getTitle());
-			stmt.setString(2, t.getDescription());
-			stmt.setDate(3, Date.valueOf(t.getDueDate()));
-			stmt.setBoolean(4, t.getStatus());
-			stmt.setString(5, t.getPriority());
+	        // Asigna los valores de los parámetros en el PreparedStatement
+	        stmt.setString(1, t.getTitle());
+	        stmt.setString(2, t.getDescription());
+	        
+	        // Verifica si la fecha de vencimiento es válida antes de asignarla
+	        if (t.getDueDate() != null) {
+	            stmt.setDate(3, Date.valueOf(t.getDueDate()));
+	        } else {
+	            stmt.setNull(3, Types.DATE);
+	        }
 
-			LocalDateTime now = LocalDateTime.now();
-			stmt.setTimestamp(6, Timestamp.valueOf(now));
+	        stmt.setBoolean(4, t.getStatus());
+	        stmt.setString(5, t.getPriority());
 
-			stmt.setLong(7, t.getUserAsignedId());
-			stmt.setLong(8, t.getProjectId());
+	        // Agrega la fecha actual de actualización
+	        LocalDateTime now = LocalDateTime.now();
+	        stmt.setTimestamp(6, Timestamp.valueOf(now));
 
-			stmt.setLong(9, t.getId());
+	        // Asigna los IDs de usuario asignado y proyecto
+	        stmt.setLong(7, t.getUserAsignedId());
+	        stmt.setLong(8, t.getProjectId());
 
-			int affectedRows = stmt.executeUpdate();
+	        // Asigna el ID de la tarea
+	        stmt.setLong(9, t.getId());
 
-			if (affectedRows == 0) {
-				throw new SQLException("No se encontró la tarea con ID " + t.getId() + " para actualizar.");
-			}
+	        // Ejecuta la actualización
+	        int affectedRows = stmt.executeUpdate();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw e;
-		}
+	        // Si no se afectó ninguna fila, lanza una excepción
+	        if (affectedRows == 0) {
+	            throw new SQLException("No se encontró la tarea con ID " + t.getId() + " para actualizar.");
+	        }
+
+	    } catch (SQLException e) {
+	        // Muestra el error en consola y lanza la excepción para que pueda ser manejada en otro lugar
+	        System.err.println("Error al actualizar la tarea con ID: " + t.getId());
+	        e.printStackTrace();
+	        throw new SQLException("Error al actualizar la tarea con ID: " + t.getId(), e);
+	    }
 	}
+
+	@Override
+	public void setTaskStatusToTrue(Long id) {
+		 String sql = "UPDATE tasks_tbl SET status = TRUE WHERE id = ?";
+		    
+		    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+		        stmt.setLong(1, id);
+		        
+		        int rowsAffected = stmt.executeUpdate();
+		        
+		        if (rowsAffected == 0) {
+		            System.out.println("No se encontró una tarea con el ID: " + id);
+		        } else {
+		            System.out.println("Estado de la tarea con ID " + id + " actualizado a TRUE exitosamente.");
+		        }
+		    } catch (SQLException e) {
+		        System.err.println("Error al intentar actualizar el estado de la tarea con ID " + id);
+		        e.printStackTrace();
+		        
+		    }
+
+	}
+
+	@Override
+	public void removeUserFromProject(Long userId, Long projectId) {
+		String sql = "UPDATE tasks_tbl SET user_assigned_id = NULL WHERE user_assigned_id = ? AND project_id = ?";
+	    
+	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+	        stmt.setLong(1, userId);    // Establecemos el userId que será NULL en las tareas
+	        stmt.setLong(2, projectId); // Establecemos el projectId para filtrar las tareas del proyecto específico
+	        
+	        int rowsAffected = stmt.executeUpdate();
+	        
+	        // Aquí podrías agregar algún manejo de excepciones o lógica adicional si es necesario
+	        System.out.println("Número de tareas actualizadas: " + rowsAffected);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	       
+	    }
+		
+	}
+
 
 }

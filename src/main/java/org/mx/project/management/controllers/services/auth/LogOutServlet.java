@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers;
+package org.mx.project.management.controllers.services.auth;
 
 import java.io.IOException;
 
@@ -31,7 +31,13 @@ public class LogOutServlet extends HttpServlet {
 		Cookie emailCookie = new Cookie("email", null);
 		emailCookie.setMaxAge(0); // Expira inmediatamente
 		emailCookie.setPath("/"); // Asegúrate de que el path coincida con el utilizado para crear la cookie
+		
+		Cookie userIdCookie = new Cookie("userId", null);
+		userIdCookie.setMaxAge(0);
+		userIdCookie.setPath("/");
+		
 		resp.addCookie(emailCookie);
+		resp.addCookie(userIdCookie);
 
 		// Redirigir a la página de inicio o a otra página
 		resp.sendRedirect(req.getContextPath() + "/login.html");

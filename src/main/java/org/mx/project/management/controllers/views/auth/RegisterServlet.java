@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers;
+package org.mx.project.management.controllers.views.auth;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -38,7 +38,7 @@ public class RegisterServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		// return view
 		getServletContext().getRequestDispatcher("/register.jsp").forward(req, resp);
 
 	}
@@ -54,58 +54,82 @@ public class RegisterServlet extends HttpServlet {
 		Connection conn = (Connection) req.getAttribute("conn");
 		UserService userService = new UserServiceImpl(conn);
 
+		/**
+		 * get parameters
+		 */
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
 		String email = req.getParameter("email");
 
-		User user = new User();
-		user.setEmail(email);
-		user.setName(username);
 
-		// Manejo de errores
+		/**
+		 * validation 
+		 */
 		Map<String, String> errors = new HashMap<>();
 
-		if (username == null || username.isBlank()) {
-			errors.put("username", "Name is required");
+		if (username == null || username.trim().isEmpty()) {
+		    errors.put("username", "Name is required");
 		}
 
-		if (password == null || password.isBlank()) {
-			errors.put("password", "Password is required");
+		if (password == null || password.trim().isEmpty()) {
+		    errors.put("password", "Password is required");
 		}
 
-		if (email == null || email.isBlank()) {
-			errors.put("email", "Email is required");
+		if (email == null || email.trim().isEmpty()) {
+		    errors.put("email", "Email is required");
 		}
-
+		
+		/**
+		 * return errors
+		 */
 		if (!errors.isEmpty()) {
-			System.out.println("Hay errores");
-
 			resp.setContentType("application/json");
+			// status 400
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().write(new Gson().toJson(errors));
 			return;
 		}
+		
+		
+		User user = new User();
+		user.setEmail(email);
+		user.setName(username);
 
 		Optional<User> userO;
 		try {
+			
+			/**
+			 * get a user, if exists then user name can not register
+			 */
 			userO = userService.findUserByEmail(email);
 			if (userO.isPresent()) {
+				// status 409
 				resp.setStatus(HttpServletResponse.SC_CONFLICT);
 				resp.getWriter().write("{\"message\":\"User already exists\"}");
 			} else {
+				
+				/**
+				 * if does not exists user name then registered
+				 */
 				String encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 				user.setPassword(encryptedPassword);
 				userService.saveUser(user);
 
 				HttpSession session = req.getSession();
 				session.setAttribute("email", email);
-
+				
+				/**
+				 * assigned cookie
+				 */
 				Cookie emailCookie = new Cookie("email", email);
 				emailCookie.setMaxAge(60 * 60);
 				emailCookie.setPath("/");
 				resp.addCookie(emailCookie);
-
-				resp.setStatus(HttpServletResponse.SC_OK);
+				
+				/**
+				 * message success status 200
+				 */
+				resp.setStatus(HttpServletResponse.SC_OK); 
 				resp.getWriter().write("{\"message\":\"Registration successful\"}");
 			}
 		} catch (SQLException e) {

@@ -1,4 +1,4 @@
-package org.mx.project.management.controllers.users;
+package org.mx.project.management.controllers.services.users;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -113,13 +113,14 @@ public class UserServelt extends HttpServlet {
 
 		Map<String, String> errors = new HashMap<>();
 
-		if (username == null || username.isBlank()) {
-			errors.put("username", "Name is required");
+		if (username == null || username.trim().isEmpty()) {
+		    errors.put("username", "Name is required");
 		}
 
-		if (password == null || password.isBlank()) {
-			errors.put("password", "Password is required");
+		if (password == null || password.trim().isEmpty()) {
+		    errors.put("password", "Password is required");
 		}
+
 
 		if (userId == null) {
 			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

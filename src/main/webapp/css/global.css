@@ -13,6 +13,11 @@ body {
 	background-color: #080710;
 }
 
+
+hr {
+    margin: 0;
+}
+
 /* Login */
 
 .background{
@@ -111,121 +116,143 @@ form-auth-label{
 }
 
 /* Cards projects*/
+/* Cards projects */
 .ag-format-container {
   width: 1142px;
   margin: 0 auto;
 }
 
 .ag-courses_box {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
   align-items: flex-start;
-  -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-
   padding: 50px 0;
 }
+
 .ag-courses_item {
-  -ms-flex-preferred-size: calc(33.33333% - 30px);
   flex-basis: calc(33.33333% - 30px);
-
   margin: 0 15px 30px;
-
   overflow: hidden;
-
   border-radius: 28px;
 }
+
 .ag-courses-item_link {
   display: block;
   padding: 30px 20px;
   background-color: #121212;
-
   overflow: hidden;
-
   position: relative;
 }
+
 .ag-courses-item_link:hover,
 .ag-courses-item_link:hover .ag-courses-item_date {
   text-decoration: none;
   color: #FFF;
 }
+
 .ag-courses-item_link:hover .ag-courses-item_bg {
-  -webkit-transform: scale(10);
-  -ms-transform: scale(10);
   transform: scale(10);
 }
+
 .ag-courses-item_title {
   min-height: 87px;
   margin: 0 0 25px;
-	text-decoration: none;
-  overflow: hidden;
-
   font-weight: bold;
   font-size: 30px;
   color: #FFF;
-
   z-index: 2;
   position: relative;
 }
+
 .ag-courses-item_date-box {
   font-size: 18px;
   color: #FFF;
-
   z-index: 2;
   position: relative;
 }
+
 .ag-courses-item_date {
   font-weight: bold;
   color: #f9b234;
-
-  -webkit-transition: color .5s ease;
-  -o-transition: color .5s ease;
-  transition: color .5s ease
+  transition: color .5s ease;
 }
+
 .ag-courses-item_bg {
   height: 128px;
   width: 128px;
   background-color: #f9b234;
-
   z-index: 1;
   position: absolute;
   top: -75px;
   right: -75px;
-
   border-radius: 50%;
-
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
   transition: all .5s ease;
 }
+
 .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
   background-color: #3ecd5e;
 }
+
 .ag-courses_item:nth-child(3n) .ag-courses-item_bg {
   background-color: #e44002;
 }
+
 .ag-courses_item:nth-child(4n) .ag-courses-item_bg {
   background-color: #952aff;
 }
+
 .ag-courses_item:nth-child(5n) .ag-courses-item_bg {
   background-color: #cd3e94;
 }
+
 .ag-courses_item:nth-child(6n) .ag-courses-item_bg {
   background-color: #4c49ea;
 }
 
-a{
-	text-decoration: none;
+a {
+  text-decoration: none;
 }
 
+/* Button Styles */
+.ag-courses-item_actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
 
+.edit-project-btn,
+.delete-project-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 3; 
+}
 
+.edit-project-btn {
+  background-color: #3ecd5e;
+  color: #FFF;
+}
+
+.delete-project-btn {
+  background-color: #e44002;
+  color: #FFF;
+}
+
+.edit-project-btn:hover {
+  background-color: #32a652;
+}
+
+.delete-project-btn:hover {
+  background-color: #c23501;
+}
+
+/* Responsive Styles */
 @media only screen and (max-width: 979px) {
   .ag-courses_item {
-    -ms-flex-preferred-size: calc(50% - 30px);
     flex-basis: calc(50% - 30px);
   }
   .ag-courses-item_title {
@@ -237,17 +264,15 @@ a{
   .ag-format-container {
     width: 96%;
   }
-
 }
+
 @media only screen and (max-width: 639px) {
   .ag-courses_item {
-    -ms-flex-preferred-size: 100%;
     flex-basis: 100%;
   }
   .ag-courses-item_title {
     min-height: 72px;
     line-height: 1;
-
     font-size: 24px;
   }
   .ag-courses-item_link {
@@ -256,7 +281,11 @@ a{
   .ag-courses-item_date-box {
     font-size: 16px;
   }
+  .ag-courses-item_actions {
+    flex-direction: column;
+  }
 }
+
 
 /* Cards end*/
 
@@ -377,6 +406,7 @@ textarea.form-input {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   padding: 20px;
+  margin: 10px 0px;
   text-align: left;
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -483,6 +513,20 @@ textarea.form-input {
   background-color: #e53935;
 }
 
+.task-actions .btn-edit {
+  background-color: #4A90E2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.task-actions .btn-edit:hover {
+  background-color: #357ABD;
+}
+
 .task-card.completed {
   background: linear-gradient(135deg, #9e9e9e 0%, #bdbdbd 100%);
   border: 2px solid #757575;
@@ -530,13 +574,13 @@ textarea.form-input {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
-.modal-header h2 {
+/*.modal-header h2 {
     margin: 0;
     font-size: 1.5rem;
-}
+}*/
 
 .modal-header .close-btn {
     font-size: 1.5rem;
@@ -551,12 +595,21 @@ textarea.form-input {
 /* Estilo del botón para abrir el modal */
 .open-modal-btn {
     padding: 10px 20px;
+    height: 50px;
     background-color: #2196F3;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
+}
+
+.form-container{
+	padding: 10px;
+}
+
+.form-group{
+	margin-bottom: 5px	
 }
 
 .open-modal-btn:hover {
@@ -613,6 +666,7 @@ textarea.form-input {
             overflow: hidden;
             background-color: #f9f9f9;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 300px;
         }
 
         .user-card:hover {
@@ -623,13 +677,14 @@ textarea.form-input {
         .user-card-header {
             background-color: #007BFF;
             color: white;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             font-size: 1.25rem;
+			font-size: 15px;
         }
 
         .user-card-body {
-            padding: 20px;
+            padding: 10px;
         }
 
         .user-card-body h5 {
@@ -647,17 +702,19 @@ textarea.form-input {
         .user-card-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .user-card-buttons .btn {
             flex: 1;
-            margin: 0 5px;
+            font-size: 10px;
         }
 
         .btn-add {
             background-color: #28a745;
             color: #fff;
+            margin-right: 5px;
+            
         }
 
         .btn-add:hover {
@@ -672,6 +729,96 @@ textarea.form-input {
         .btn-remove:hover {
             background-color: #c82333;
         }
+
+.user-grid {
+    display: grid;
+    gap: 20px;
+    padding: 00px;
+    margin: 20px 0px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+@media (max-width: 768px) {
+    .user-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .user-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
 /* user card end */
+
+/* viewa */
+
+.header-panel{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+
+/*
+search
+*/
+
+.search-box{
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+.input-search{
+  height: 50px;
+  width: 50px;
+  border-style: none;
+  padding: 10px;
+  font-size: 18px;
+  letter-spacing: 2px;
+  outline: none;
+  border-radius: 25px;
+  transition: all .5s ease-in-out;
+  background-color: #22a6b3;
+  padding-right: 40px;
+  color:#fff;
+}
+.input-search::placeholder{
+  color:rgba(255,255,255,.5);
+  font-size: 18px;
+  letter-spacing: 2px;
+  font-weight: 100;
+}
+.btn-search{
+  width: 50px;
+  height: 50px;
+  border-style: none;
+  font-size: 20px;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  position: absolute;
+  right: 0px;
+  color:#ffffff ;
+  background-color:transparent;
+  pointer-events: painted;  
+}
+.btn-search:focus ~ .input-search{
+  width: 300px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom:1px solid rgba(255,255,255,.5);
+  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+.input-search:focus{
+  width: 300px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom:1px solid rgba(255,255,255,.5);
+  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+
+
 
 

@@ -1,13 +1,17 @@
-package org.mx.project.management.controllers.tasks;
+package org.mx.project.management.controllers.services.tasks;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.List;
 
 import org.mx.project.management.config.dateConfig.GsonConfig;
 import org.mx.project.management.config.jsonConverter.JsonUtils;
 import org.mx.project.management.models.Task;
+import org.mx.project.management.models.User;
 import org.mx.project.management.services.TaskService;
+import org.mx.project.management.services.UserService;
 import org.mx.project.management.services.impl.TaskServiceImpl;
+import org.mx.project.management.services.impl.UserServiceImpl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -18,8 +22,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet({ "/task-by-id" })
-public class GetTaskById extends HttpServlet {
+@WebServlet({ "/task-by-user-asigned" })
+public class GetAllTasksByUserAsigned extends HttpServlet {
 
 	/**
 	 * 
@@ -36,6 +40,7 @@ public class GetTaskById extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Connection conn = (Connection) req.getAttribute("conn");
 		TaskService taskService = new TaskServiceImpl(conn);
+		UserService userService = new UserServiceImpl(conn);
 
 		System.out.println("invocado");
 
@@ -44,25 +49,27 @@ public class GetTaskById extends HttpServlet {
 
 		JsonObject jsonObject = JsonUtils.parseJsonRequest(req);
 		// Long userId = jsonObject.get("userId").getAsLong();
-		Long taskId = jsonObject.has("taskId") ? jsonObject.get("taskId").getAsLong() : null;
+		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
 
-		System.out.println("taskId" + taskId);
+		System.out.println(userId);
 
 		try {
-			Task task = taskService.findTaskById(taskId);
 
-			if (task == null) {
+			User user = userService.findUserBYId(userId);
+			if (user == null) {
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
-				resp.getWriter().write("{\"message\":\"Task not found\"}");
+				resp.getWriter().write("{\"message\":\"User not found\"}");
 				return;
 			}
+
+			List<Task> tasksByUser = taskService.findAllTasksByUserAsigned(userId);
 
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
 
 			Gson gson = GsonConfig.createGson();
-			String json = gson.toJson(task);
+			String json = gson.toJson(tasksByUser);
 			resp.getWriter().write(json);
 
 		} catch (Exception e) {

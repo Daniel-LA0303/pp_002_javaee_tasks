@@ -21,4 +21,7 @@ public interface TaskService {
 
 	String updateTask(Task task) throws SQLException;
 
+	String setTaskStatusToTrue(Long id) throws SQLException;
+	
+	void removeUserFromProject(Long userId, Long projectId) throws SQLException;
 }
