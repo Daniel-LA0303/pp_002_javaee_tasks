@@ -8,6 +8,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * config to read dates
+ */
 public class LocalDateAdapter extends TypeAdapter<LocalDate> {
 	private DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 

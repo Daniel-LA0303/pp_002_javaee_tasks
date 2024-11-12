@@ -53,7 +53,7 @@ public class UserServelt extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Connection conn = (Connection) req.getAttribute("conn");
 		UserService userService = new UserServiceImpl(conn);
-		System.out.println("invocado");
+
 		try {
 
 			List<User> users = userService.findAllUsers();
@@ -76,22 +76,9 @@ public class UserServelt extends HttpServlet {
 			resp.getWriter().write("{\"error\": \"An unexpected error occurred\"}");
 			e.printStackTrace();
 
-		} finally {
-
-		}
+		} 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see jakarta.servlet.http.HttpServlet#doPost(jakarta.servlet.http.
-	 * HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// this service already exists in register servelt
-		super.doPost(req, resp);
-	}
 
 	/*
 	 * (non-Javadoc)

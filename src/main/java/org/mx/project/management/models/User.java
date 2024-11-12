@@ -4,16 +4,34 @@ import java.time.LocalDateTime;
 
 public class User {
 
+	/**
+	 * id
+	 */
 	private Long id;
 
+	/**
+	 * name
+	 */
 	private String name;
 
+	/**
+	 * password
+	 */
 	private String password;
 
+	/**
+	 * email
+	 */
 	private String email;
 
+	/**
+	 * created at
+	 */
 	private LocalDateTime createdAt;
 
+	/**
+	 * updated at
+	 */
 	private LocalDateTime updatedAt;
 
 	/**

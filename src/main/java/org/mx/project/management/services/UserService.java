@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.mx.project.management.models.User;
 
+/**
+ * service user
+ */
 public interface UserService {
 
 	String deleteUser(Long id) throws SQLException;

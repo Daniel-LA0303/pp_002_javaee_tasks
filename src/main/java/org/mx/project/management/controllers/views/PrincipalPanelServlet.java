@@ -32,10 +32,7 @@ public class PrincipalPanelServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Connection conn = (Connection) req.getAttribute("conn");
-		ProjectService projectService = new ProjectServiceImpl(conn);
-		
-		
-		
+		ProjectService projectService = new ProjectServiceImpl(conn);		
 		
 		getServletContext().getRequestDispatcher("/principalPanel.jsp").forward(req, resp);
 	}

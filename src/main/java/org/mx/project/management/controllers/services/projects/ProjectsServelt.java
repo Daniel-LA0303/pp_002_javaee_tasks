@@ -7,12 +7,16 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.mx.project.management.config.dateConfig.GsonConfig;
 import org.mx.project.management.config.jsonConverter.JsonUtils;
 import org.mx.project.management.models.Project;
+import org.mx.project.management.models.User;
 import org.mx.project.management.services.ProjectService;
+import org.mx.project.management.services.UserService;
 import org.mx.project.management.services.impl.ProjectServiceImpl;
+import org.mx.project.management.services.impl.UserServiceImpl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -42,41 +46,38 @@ public class ProjectsServelt extends HttpServlet {
 
 		Connection conn = (Connection) req.getAttribute("conn");
 		ProjectService projectService = new ProjectServiceImpl(conn);
-
 		JsonObject jsonObject = JsonUtils.parseJsonRequest(req);
-
 		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
-		
-		
-		System.out.println("**** delte projetc");
-		
-		System.out.println(userId);
-		System.out.println(projectId);
-
 
 		try {
 			Project project = projectService.findProjectById(projectId);
 
+			if(project == null) {
+				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				resp.setContentType("application/json");
+				resp.getWriter().write("{\"message\":\"This project not found.\"}");
+			}
+			
 			if (userId != project.getUserId()) {
 				resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"You are not authorized to delete this project\"}");
 				return;
-			} else {
-				resp.setContentType("application/json");
-				resp.setCharacterEncoding("UTF-8");
-				resp.setStatus(HttpServletResponse.SC_OK);
+			} 
+			
+			resp.setContentType("application/json");
+			resp.setCharacterEncoding("UTF-8");
+			resp.setStatus(HttpServletResponse.SC_OK);
 
-				Gson gson = new Gson();
-				String message = projectService.deleteProject(project.getId());
-				System.out.println(message);
-				String json = gson.toJson(message);
-				resp.getWriter().write(json);
-			}
-
+			Gson gson = new Gson();
+			String message = projectService.deleteProject(project.getId());
+			String json = gson.toJson(message);
+			resp.getWriter().write(json);
 		} catch (Exception e) {
-
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			resp.getWriter().write("{\"error\": \"Error in server.\"}");
+			e.printStackTrace();
 		}
 
 	}
@@ -89,38 +90,47 @@ public class ProjectsServelt extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Connection conn = null;
-		System.out.println("invocado");//
+		Connection conn = (Connection) req.getAttribute("conn");
+		ProjectService projectService = new ProjectServiceImpl(conn);
+		UserService userService = new UserServiceImpl(conn);
 
+		String email = req.getParameter("email");
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
+		
 		try {
-			conn = (Connection) req.getAttribute("conn");
-			if (conn == null) {
-				throw new ServletException("Database connection not found");
+
+			Optional<User> user = userService.findUserByEmail(email);
+			if (user.isEmpty()) {
+				// status 404
+				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				resp.setContentType("application/json");
+				resp.getWriter().write("{\"message\":\"User not found\"}");
+				return;
 			}
+			
+			// projects by user
+			List<Project> projects = projectService.findAllProjectsByUserId(user.get().getId());
+			
+			// projects assigned by user
+			List<Project> projectsAsigned = projectService.getProjectsByUserAigned(user.get().getId());
 
-			ProjectService projectService = new ProjectServiceImpl(conn);
-			List<Project> projects = projectService.findAllProjects();
-
-			resp.setContentType("application/json");
-			resp.setCharacterEncoding("UTF-8");
+			Map<String, Object> responseMap = new HashMap<>();
+		    responseMap.put("projects", projects); 
+		    responseMap.put("projectsAsigned", projectsAsigned);
 
 			Gson gson = GsonConfig.createGson();
-			String json = gson.toJson(projects);
+			String json = gson.toJson(responseMap);
+			
+			// status 200
+			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.getWriter().write(json);
 
-		} catch (SQLException e) {
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			resp.getWriter().write("{\"error\": \"Database error occurred\"}");
-			e.printStackTrace();
-
 		} catch (Exception e) {
-
+			// status 500
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			resp.getWriter().write("{\"error\": \"An unexpected error occurred\"}");
+			resp.getWriter().write("{\"error\": \"Error in server.\"}");
 			e.printStackTrace();
-
-		} finally {
-
 		}
 	}
 
@@ -146,10 +156,7 @@ public class ProjectsServelt extends HttpServlet {
 		String endDateStr = jsonObject.get("endDate").getAsString();
 		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
 
-		System.out.println("Received Parameters: " + title + ", " + description + ", " + startDateStr + ", "
-				+ endDateStr 
-				+ ", " + userId
-				);
+		// validation
 		Map<String, String> errors = new HashMap<>();
 
 		if (title == null || title.trim().isEmpty()) {
@@ -168,13 +175,6 @@ public class ProjectsServelt extends HttpServlet {
 		    errors.put("endDate", "End Date is required");
 		}
 
-		/*if (userId == null) {
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			resp.setContentType("application/json");
-			resp.getWriter().write("{\"message\":\"You are not authorized to post\"}");
-			return;
-		}*/
-
 		if (!errors.isEmpty()) {
 			resp.setContentType("application/json");
 			// status 400
@@ -192,14 +192,17 @@ public class ProjectsServelt extends HttpServlet {
 
 		try {
 			projectService.saveProject(project);
+			resp.setContentType("application/json");
+			//status 201
+			resp.setStatus(HttpServletResponse.SC_CREATED);
+			resp.getWriter().write("{\"message\":\"Project created successfully\"}");
 		} catch (SQLException e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			resp.getWriter().write("{\"error\": \"Error in server.\"}");
 			e.printStackTrace();
 		}
 
-		resp.setContentType("application/json");
-		//status 201
-		resp.setStatus(HttpServletResponse.SC_CREATED);
-		resp.getWriter().write("{\"message\":\"Project created successfully\"}");
+		
 	}
 
 	/*
@@ -223,20 +226,10 @@ public class ProjectsServelt extends HttpServlet {
 		String startDateStr = jsonObject.get("startDate").getAsString();
 		String endDateStr = jsonObject.get("endDate").getAsString();
 		Long userId = jsonObject.has("userId") ? jsonObject.get("userId").getAsLong() : null;
-
-		//Boolean status = jsonObject.has("status") ? jsonObject.get("status").getAsBoolean() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
 
-		// quitar
-		System.out.println("Title: " + title);
-		System.out.println("Description: " + description);
-		System.out.println("Start Date: " + startDateStr);
-		System.out.println("End Date: " + endDateStr);
-		System.out.println("User ID: " + userId);
-		//System.out.println("Status: " + status);
-		System.out.println("Project ID: " + projectId);
 
-		// Manejo de errores
+		// validation
 		Map<String, String> errors = new HashMap<>();
 
 		if (title == null || title.trim().isEmpty()) {
@@ -253,13 +246,6 @@ public class ProjectsServelt extends HttpServlet {
 
 		if (endDateStr == null || endDateStr.trim().isEmpty()) {
 		    errors.put("endDate", "End Date is required");
-		}
-
-		if (userId == null) {
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			resp.setContentType("application/json");
-			resp.getWriter().write("{\"message\":\"You are not authorized to update this project\"}");
-			return;
 		}
 
 		if (!errors.isEmpty()) {
@@ -286,7 +272,6 @@ public class ProjectsServelt extends HttpServlet {
 				return;
 			}
 
-			System.out.println("Project found: " + p.getTitle());
 			Project project = new Project();
 			project.setId(p.getId());
 			project.setTitle(title);
@@ -295,7 +280,6 @@ public class ProjectsServelt extends HttpServlet {
 			project.setEndDate(LocalDate.parse(endDateStr));
 			project.setUserId(userId);
 			project.setStatus(p.getStatus());
-
 			projectService.updateProject(project);
 
 			resp.setStatus(HttpServletResponse.SC_OK);

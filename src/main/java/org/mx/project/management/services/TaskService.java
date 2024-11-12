@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.mx.project.management.models.Task;
 
+/**
+ * service task
+ */
 public interface TaskService {
 
 	String deleteTask(Long id) throws SQLException;

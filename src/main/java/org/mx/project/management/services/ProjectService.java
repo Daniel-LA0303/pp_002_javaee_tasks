@@ -6,6 +6,9 @@ import java.util.List;
 import org.mx.project.management.dto.UserByProjectDTO;
 import org.mx.project.management.models.Project;
 
+/**
+ * service project
+ */
 public interface ProjectService {
 
 	String deleteProject(Long id) throws SQLException;

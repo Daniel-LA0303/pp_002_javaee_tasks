@@ -1,5 +1,8 @@
 package org.mx.project.management.dto;
 
+/**
+ * dto
+ */
 public class UserByProjectDTO {
 	
 	private Long id;

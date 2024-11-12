@@ -1,7 +1,7 @@
 <jsp:include page="layout/header.jsp"/>
 
 	<div class="header-panel">
-		<h1 class="mt-3">My projects</h1>
+		<h3 class="mt-3">My projects</h3>
 		<!-- modal section -->
 		<button class="open-modal-btn new-project">New Project</button>    
 	</div>
@@ -11,17 +11,15 @@
 	<div class="ag-format-container">
 		<!-- show cards projects -->
 		<div class="ag-courses_box" id="projects-container">
-	    <!-- <div id="" class="projects-container"></div> -->
 	  	</div>
 	</div>
 	
-	<h1 class="mt-3">Projects I am assigned to</h1>
+	<h3 class="mt-3">Projects I am assigned to</h3>
 	
 	<!-- Cards section -->
 	<div class="ag-format-container">
 		<!-- show cards projects -->
 		<div class="ag-courses_box" id="projects-container-to-asigned">
-	    <!-- <div id="" class="projects-container"></div> -->
 	  	</div>
 	</div>
 
@@ -29,14 +27,11 @@
  	<div class="modal-overlay">
 		<div class="modal-content">
 			<div class="modal-header">
-				<span class="close-btn">&times;</span>
+				<span class="close-btn text-black">&times;</span>
 			</div>
 			<div class="modal-body">	
 				<div class="form-container ">
-					<h3 class="text-center">Create Project</h1>
-					<form action="#" 
-					
-					>
+					<form action="#" >
 						<input type="hidden" id="projectId" name="taskId" value="">
 						<div class="form-group">
 							<label for="title" class="form-label">Title</label>
@@ -65,39 +60,31 @@
 		</div>
 	</div>
 	
-	<button id="logoutButton">Log Out</button>
-
     <script type="text/javascript">
         $(document).ready(function() {
         	
             const email = getCookie('email');
             const userId = getCookie('userId');
-            console.log("Email:", email);
-            console.log("UserId", parseInt(userId));
-
             let projects;
         	
-        	//get projetcs
-		    var url = "${pageContext.request.contextPath}/projects-user?email=" + encodeURIComponent(email);
+        	//get personal projetcs and projects assigned
+		    var url = "${pageContext.request.contextPath}/projects?email=" + encodeURIComponent(email);
 		    $.ajax({
 		        url: url,
 		        type: 'GET',
 		        success: function(response) {
-		        	 console.log(response);  
-		        	 
-		        	 
+					console.log(response);  
 		        	projects = response.projects;
 		        	 
-		        	 var projectsAsigned = response.projectsAsigned;
-		        	 
-		                let cards = '';
-		                projects.forEach(project => {
-		                    var title = project.title;
-		                    var description = project.description;
-		                    var startDate = project.startDate;
-		                    var projectId = project.id;
+		        	var projectsAsigned = response.projectsAsigned;
+		        	let cards = '';
+		            projects.forEach(project => {
+		            	var title = project.title;
+		                var description = project.description;
+		                var startDate = project.startDate;
+		       	        var projectId = project.id;
 		                   
-		                    cards += '<div class="ag-courses_item">' +
+		                cards += '<div class="ag-courses_item">' +
 		                    '<div class="ag-courses-item_link">' +
 		                        '<a href="${pageContext.request.contextPath}/project?id=' + projectId + '" class="">' +
 		                            '<div class="ag-courses-item_bg"></div>' +
@@ -110,9 +97,6 @@
 		                                    startDate +
 		                                '</span>' +
 		                            '</div>' +
-		                            '<div class="ag-courses-item_description">' +
-		                                description +
-		                            '</div>' +
 		                        '</a>' +
 		                        '<div class="ag-courses-item_actions">' +
 		                            '<button class="edit-project-btn" data-project-id="' + projectId + '">Editar</button>' +
@@ -121,17 +105,18 @@
 		                    '</div>' +
 		                '</div>';
 
-		                });
-		                $('#projects-container').html(cards);
-		                
-		                cards = '';
-		                projectsAsigned.forEach(project => {
-		                    var title = project.title;
-		                    var description = project.description;
-		                    var startDate = project.startDate;
-		                    var projectId = project.id;
+		            });
+		          	$('#projects-container').html(cards);
+					
+		          	cards = '';
+					
+					projectsAsigned.forEach(project => {
+		            	var title = project.title;
+		                var description = project.description;
+		                var startDate = project.startDate;
+		                var projectId = project.id;
 		                   
-		                    cards += '<div class="ag-courses_item">' +
+		                cards += '<div class="ag-courses_item">' +
 		                    			'<a href="${pageContext.request.contextPath}/project?id=' + projectId + '" class="ag-courses-item_link">' +
 		                                    '<div class="ag-courses-item_bg"></div>' +
 		                                    '<div class="ag-courses-item_title">' +
@@ -156,6 +141,7 @@
 		        }
 		    });
 		    
+		    // delete a project
 		    $('#projects-container').on('click', '.delete-project-btn', function() {
 		        const projectId = $(this).data('project-id');
 		        console.log("proyecto a eliminar: ", projectId);
@@ -183,7 +169,8 @@
 	                }
 	            });
 		    });
-		    
+            
+            // edit a project
 		    $('#projects-container').on('click', '.edit-project-btn', function() {
 		        const projectId = $(this).data('project-id');
 		        console.log("proyecto a editar: ", projectId);
@@ -197,59 +184,9 @@
 	    		$('#end_date').val(project.endDate);
 	    		$('.modal-overlay').fadeIn();
 	           console.log(project);
-	           
-	           
 		    });
-        	
-        	//logout session
-            $('#logoutButton').click(function() {
-            	
-            	console.log("exit");
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/logout',
-                    type: 'GET',
-                    success: function() {
-                        
-                        window.location.href = '${pageContext.request.contextPath}/login.html';
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en el cierre de sesión:", error);
-                    }
-                });
-            });
-        	
-            $('.new-project').on('click', function() {
-            	$('#projectId').val('');  
-	       		$('#title').val('');
-	    		$('#description').val('');
-	    		$('#start_date').val('');
-	    		$('#end_date').val('');
-            	$('.error-message').remove();
-                $('.modal-overlay').fadeIn();
-            });
             
-            // modal section
-            // open modal
-            $('.open-modal-btn').on('click', function() {
-            	$('.error-message').remove();
-                $('.modal-overlay').fadeIn();
-            });
-
-            // close modal
-            $('.close-btn').on('click', function() {
-            	$('.error-message').remove();
-                $('.modal-overlay').fadeOut();
-            });
-
-            // close modal dinamic
-            $('.modal-overlay').on('click', function(e) {
-            	$('.error-message').remove();
-                if (e.target === this) { 
-                    $(this).fadeOut();
-                }
-            });
-            
-            // post a new project
+            // post a new project or update a project
         	$('#newProject').click(function(event){
         		event.preventDefault();
         		
@@ -313,11 +250,40 @@
 			                $('#' + inputId).after('<span class="error-message" style="color: red;">' + errorMessage + '</span>');
 			            }
         	        }
-        	    });
-        		
-        		
+        	    });        		
         	});
             
+            // modal section
+            // open modal
+            $('.open-modal-btn').on('click', function() {
+            	$('.error-message').remove();
+                $('.modal-overlay').fadeIn();
+            });
+
+            // close modal
+            $('.close-btn').on('click', function() {
+            	$('.error-message').remove();
+                $('.modal-overlay').fadeOut();
+            });
+
+            // close modal dinamic
+            $('.modal-overlay').on('click', function(e) {
+            	$('.error-message').remove();
+                if (e.target === this) { 
+                    $(this).fadeOut();
+                }
+            });
+            
+            // clean modal form
+            $('.new-project').on('click', function() {
+            	$('#projectId').val('');  
+	       		$('#title').val('');
+	    		$('#description').val('');
+	    		$('#start_date').val('');
+	    		$('#end_date').val('');
+            	$('.error-message').remove();
+                $('.modal-overlay').fadeIn();
+            });
         });
     </script>
 <jsp:include page="layout/footer.jsp"/>

@@ -16,24 +16,22 @@ import org.mx.project.management.dto.UserByProjectDTO;
 import org.mx.project.management.models.Project;
 import org.mx.project.management.repositories.ProjectRepository;
 
+/**
+ * implementation project
+ */
 public class ProjectRepositoryImpl implements ProjectRepository {
 
 	private Connection connection;
 
-	/**
-	 * 
-	 */
 	public ProjectRepositoryImpl(Connection connection) {
 		this.connection = connection;
 	}
 
+	/**
+	 * delete a project
+	 */
 	@Override
 	public void delete(Long id) throws SQLException {
-		
-		
-		
-		System.out.println("*****repository delete");
-		System.out.println("id que llega"+ id);
 		String sql = "DELETE FROM projects_tbl WHERE id = ?";
 
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -45,6 +43,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 		}
 	}
 
+	/**
+	 * find all projects
+	 */
 	@Override
 	public List<Project> findAll() throws SQLException {
 
@@ -66,7 +67,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 					project.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
 					project.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
 					project.setUserId(rs.getLong("user_id"));
-
 					projects.add(project);
 				}
 
@@ -79,6 +79,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 		return projects;
 	}
 
+	/**
+	 * find by id 
+	 */
 	@Override
 	public Project findById(Long id) throws SQLException {
 
@@ -87,7 +90,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 		Project project = null;
 
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-			// Establecer el parámetro del ID
 			stmt.setLong(1, id);
 
 			try (ResultSet rs = stmt.executeQuery()) {
@@ -107,12 +109,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw e; // Lanzar la excepción para que el llamador pueda manejarla
+			throw e;
 		}
-
 		return project;
 	}
 
+	/**
+	 * get all projects by user
+	 */
 	@Override
 	public List<Project> projectsByUser(Long userId) {
 		List<Project> projects = new ArrayList<>();
@@ -138,13 +142,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			// Manejo de excepciones: considera lanzar una excepción personalizada o
-			// registrar el error
 		}
 
 		return projects;
 	}
 
+	/**
+	 * new project
+	 */
 	@Override
 	public void save(Project project) throws SQLException {
 
@@ -166,21 +171,15 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 			stmt.setLong(8, project.getUserId());
 
 			stmt.executeUpdate();
-
-			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-				if (generatedKeys.next()) {
-					project.setId(generatedKeys.getLong(1));
-					System.out.println("Id generated: " + generatedKeys.getLong(1));
-
-				}
-			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 
+	/**
+	 * update project
+	 */
 	@Override
 	public void update(Project project) throws SQLException {
 
@@ -210,6 +209,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 		}
 	}
 
+	/**
+	 * get all users assigned to project
+	 */
 	@Override
 	public List<UserByProjectDTO> getUsersAsignedToProject(Long id) {
 		String sql = """
@@ -244,6 +246,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	    return users;
 	}
 
+	/**
+	 * get all projects by user assigned
+	 */
 	@Override
 	public List<Project> getProjectsByUserAsigned(Long id) {
 	    String sql = """
@@ -284,20 +289,19 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	    return projects;
 	}
 
+	/**
+	 * assigned one user to one project
+	 */
 	@Override
 	public void assignUserToProject(Long userId, Long projectId) {
 		String sql = "INSERT INTO users_projects_tbl (user_id, project_id, assigned_at) "
 	               + "VALUES (?, ?, ?)";
 
 	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-	        // Establecer los valores para los placeholders
-	        stmt.setLong(1, userId);  // Asignar userId
-	        stmt.setLong(2, projectId);  // Asignar projectId
-	        stmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));  // Asignar la fecha y hora actual
-
-	        // Ejecutar la inserción
+	        stmt.setLong(1, userId); 
+	        stmt.setLong(2, projectId); 
+	        stmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
 	        stmt.executeUpdate();
-	        System.out.println("User with ID " + userId + " assigned to project with ID " + projectId);
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 
@@ -305,23 +309,17 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 		
 	}
 
+	/**
+	 * remove one user assigned from a project
+	 */
 	@Override
 	public void removeUserFromProject(Long userId, Long projectId) {
 		String sql = "DELETE FROM users_projects_tbl WHERE user_id = ? AND project_id = ?";
 
-	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-	        // Establecer los valores para los placeholders
-	        stmt.setLong(1, userId);  // ID del usuario a eliminar
-	        stmt.setLong(2, projectId);  // ID del proyecto del cual se debe eliminar al usuario
-
-	        // Ejecutar la eliminación
-	        int rowsAffected = stmt.executeUpdate();
-
-	        if (rowsAffected > 0) {
-	            System.out.println("User with ID " + userId + " removed from project with ID " + projectId);
-	        } else {
-	            System.out.println("No matching record found to remove.");
-	        }
+	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {     
+	        stmt.setLong(1, userId);  
+	        stmt.setLong(2, projectId);  
+	        stmt.executeUpdate();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }

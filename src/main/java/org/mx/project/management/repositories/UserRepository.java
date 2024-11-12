@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.mx.project.management.models.User;
 
+/**
+ * user repository
+ */
 public interface UserRepository extends GlobalRepository<User> {
 
 	Optional<User> findUserByEmail(String email);

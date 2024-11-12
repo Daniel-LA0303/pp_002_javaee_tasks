@@ -2,7 +2,6 @@ package org.mx.project.management.controllers.services.tasks;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 import org.mx.project.management.config.dateConfig.GsonConfig;
 import org.mx.project.management.config.jsonConverter.JsonUtils;
+import org.mx.project.management.dto.UserByProjectDTO;
 import org.mx.project.management.models.Project;
 import org.mx.project.management.models.Task;
 import org.mx.project.management.models.User;
@@ -57,13 +57,6 @@ public class TaskServlet extends HttpServlet {
 		Long projectId = jsonObject.get("projectId").getAsLong();
 		Long userProjectId = jsonObject.has("userProjectId") ? jsonObject.get("userProjectId").getAsLong() : null;
 		Long taskToUpdateId = jsonObject.has("taskToUpdateId") ? jsonObject.get("taskToUpdateId").getAsLong() : null;
-
-		if (userProjectId == null) {
-			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			resp.setContentType("application/json");
-			resp.getWriter().write("{\"message\":\"You are not authorized to update this project\"}");
-			return;
-		}
 
 		try {
 
@@ -114,38 +107,57 @@ public class TaskServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Connection conn = null;
-		System.out.println("invocado");
+		Connection conn = (Connection) req.getAttribute("conn");
+		TaskService taskService = new TaskServiceImpl(conn);
+		ProjectService projectService = new ProjectServiceImpl(conn);
+		UserService userService = new UserServiceImpl(conn);
+
+		String projectIdStr = req.getParameter("projectId");
+		Long projectId = Long.parseLong(projectIdStr);
+		
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("UTF-8");
 
 		try {
-			conn = (Connection) req.getAttribute("conn");
-			if (conn == null) {
-				throw new ServletException("Database connection not found");
+			// get project
+			Project project = projectService.findProjectById(projectId);
+			if (project == null) {
+				// status 404
+				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				resp.setContentType("application/json");
+				resp.getWriter().write("{\"message\":\"Project not found\"}");
+				return;
 			}
 
-			TaskService taskService = new TaskServiceImpl(conn);
-			List<Task> tasks = taskService.findAllTasks();
+			User user = userService.findUserBYId(project.getUserId());
+
+			// get all tasks by project
+			List<Task> tasks = taskService.findAllTasksBYProjectId(projectId);
+			
+			// get all users assigned to project
+			List<UserByProjectDTO> usersAigned = projectService.getUsersAsignedToProject(projectId);
+			
+			Map<String, Object> responseMap = new HashMap<>();
+		    responseMap.put("project", project); // response project info 
+		    responseMap.put("tasks", tasks); // response tasks 
+		    responseMap.put("users", usersAigned); // response users
+		    responseMap.put("autor", user.getEmail());
 
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
 
 			Gson gson = GsonConfig.createGson();
-			String json = gson.toJson(tasks);
+			String json = gson.toJson(responseMap);
+			
+			// status 200
+			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.getWriter().write(json);
 
-		} catch (SQLException e) {
-
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			resp.getWriter().write("{\"error\": \"Database error occurred\"}");
-			e.printStackTrace();
-
 		} catch (Exception e) {
+			// status 500
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			resp.getWriter().write("{\"error\": \"An unexpected error occurred\"}");
+			resp.getWriter().write("{\"error\": \"Error in server.\"}");
 			e.printStackTrace();
-
-		} finally {
-
 		}
 	}
 
@@ -174,18 +186,8 @@ public class TaskServlet extends HttpServlet {
 		Long userAsignedId = jsonObject.has("userAsignedId") ? jsonObject.get("userAsignedId").getAsLong() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
 		Long userProjectId = jsonObject.has("userProjectId") ? jsonObject.get("userProjectId").getAsLong() : null;
-
-		System.out.println("***********se ejecuto post ");
-		System.out.println("Title: " + title);
-		System.out.println("Description: " + description);
-		System.out.println("Due Date: " + dueDate);
-		System.out.println("Priority: " + priority);
-		System.out.println("User Assigned ID: " + userAsignedId);
-		System.out.println("Project ID: " + projectId);
-		System.out.println("User Project ID: " + userProjectId);
-
 		
-		// Manejo de errores
+		// validation
 		Map<String, String> errors = new HashMap<>();
 
 		if (title == null || title.trim().isEmpty()) {
@@ -206,6 +208,7 @@ public class TaskServlet extends HttpServlet {
 
 		if (!errors.isEmpty()) {
 			resp.setContentType("application/json");
+			// status 400
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().write(new Gson().toJson(errors));
 			return;
@@ -217,6 +220,8 @@ public class TaskServlet extends HttpServlet {
 			User userAsigned = userService.findUserBYId(userAsignedId);
 
 			if (p == null) {
+				// status 404 not found project
+				
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"Project do not exists\"}");
@@ -224,6 +229,7 @@ public class TaskServlet extends HttpServlet {
 			}
 
 			if (userAsigned == null) {
+				// status 404 not found user
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"User asigned to task do not exists\"}");
@@ -231,6 +237,7 @@ public class TaskServlet extends HttpServlet {
 			}
 
 			if (userProjectId != p.getUserId()) {
+				// status 401
 				resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"You are not authorized to create tasks in this project\"}");
@@ -247,11 +254,13 @@ public class TaskServlet extends HttpServlet {
 
 			taskService.saveTask(newTask);
 
-			resp.setStatus(HttpServletResponse.SC_OK);
+			// status 201
+			resp.setStatus(HttpServletResponse.SC_CREATED);
 			resp.setContentType("application/json");
 			resp.getWriter().write("{\"message\":\"Task created successfully\"}");
 		} catch (Exception e) {
 			e.printStackTrace();
+			// status 500
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			resp.setContentType("application/json");
 			resp.getWriter().write("{\"message\":\"An error occurred while updating the project\"}");
@@ -276,29 +285,15 @@ public class TaskServlet extends HttpServlet {
 		resp.setCharacterEncoding("UTF-8");
 
 		JsonObject jsonObject = JsonUtils.parseJsonRequest(req);
-
 		String title = jsonObject.get("title").getAsString();
 		String description = jsonObject.get("description").getAsString();
 		String dueDate = jsonObject.get("dueDate").getAsString();
 		String priority = jsonObject.get("priority").getAsString();
-		//Boolean status = jsonObject.has("status") ? jsonObject.get("status").getAsBoolean() : null;
-
 		Long userAsignedId = jsonObject.has("userAsignedId") ? jsonObject.get("userAsignedId").getAsLong() : null;
 		Long projectId = jsonObject.get("projectId").getAsLong();
 		Long userProjectId = jsonObject.has("userProjectId") ? jsonObject.get("userProjectId").getAsLong() : null;
 		Long taskToUpdateId = jsonObject.has("taskToUpdateId") ? jsonObject.get("taskToUpdateId").getAsLong() : null;
 		
-		System.out.println("**************se ejecuto PUT");
-		System.out.println("Title: " + title);
-		System.out.println("Description: " + description);
-		System.out.println("Due Date: " + dueDate);
-		System.out.println("Priority: " + priority);
-		System.out.println("User Asigned ID: " + (userAsignedId != null ? userAsignedId : "Not provided"));
-		System.out.println("Project ID: " + projectId);
-		System.out.println("User Project ID: " + (userProjectId != null ? userProjectId : "Not provided"));
-		System.out.println("Task to update ID: " + (taskToUpdateId != null ? taskToUpdateId : "Not provided"));
-		//System.out.println("status: " + (status != null ? status : "Not provided"));
-
 		if (userProjectId == null) {
 			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			resp.setContentType("application/json");
@@ -306,6 +301,7 @@ public class TaskServlet extends HttpServlet {
 			return;
 		}
 
+		// validation
 		Map<String, String> errors = new HashMap<>();
 
 		if (title == null || title.trim().isEmpty()) {
@@ -324,7 +320,6 @@ public class TaskServlet extends HttpServlet {
 		    errors.put("priority", "Priority is required");
 		}
 
-
 		if (!errors.isEmpty()) {
 			resp.setContentType("application/json");
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -339,6 +334,7 @@ public class TaskServlet extends HttpServlet {
 			Task taskToUpdate = taskService.findTaskById(taskToUpdateId);
 
 			if (p == null) {
+				// status 404 not found project
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"Project do not exists\"}");
@@ -346,6 +342,7 @@ public class TaskServlet extends HttpServlet {
 			}
 
 			if (taskToUpdate == null) {
+				// status 404 not found task
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"Task do not exists\"}");
@@ -353,6 +350,7 @@ public class TaskServlet extends HttpServlet {
 			}
 
 			if (userAsigned == null) {
+				// status 404 not found user assigned
 				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"User asigned to task do not exists\"}");
@@ -360,6 +358,7 @@ public class TaskServlet extends HttpServlet {
 			}
 
 			if (userProjectId != p.getUserId()) {
+				// status 401
 				resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				resp.setContentType("application/json");
 				resp.getWriter().write("{\"message\":\"You are not authorized to create tasks in this project\"}");
@@ -375,16 +374,15 @@ public class TaskServlet extends HttpServlet {
 			updateTask.setUserAsignedId(userAsigned.getId());
 			updateTask.setStatus(taskToUpdate.getStatus());
 			updateTask.setProjectId(p.getId());
-
-			
 			taskService.updateTask(updateTask);
 
-			
+			// status 200
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
 			resp.getWriter().write("{\"message\":\"Task updated successfully\"}");
 		} catch (Exception e) {
 			e.printStackTrace();
+			// status 500
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			resp.setContentType("application/json");
 			resp.getWriter().write("{\"message\":\"An error occurred while updating the project\"}");

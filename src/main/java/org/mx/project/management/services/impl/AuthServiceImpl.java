@@ -10,6 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class AuthServiceImpl implements AuthService {
 
+	/**
+	 * we get cookie
+	 */
 	@Override
 	public Optional<String> getCookieUser(HttpServletRequest request) {
 

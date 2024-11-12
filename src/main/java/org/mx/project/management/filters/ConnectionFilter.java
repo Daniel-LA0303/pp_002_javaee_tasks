@@ -16,6 +16,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * this filter help us to not duplicate conexion to db
+ */
 @WebFilter("/*")
 public class ConnectionFilter implements Filter {
 
@@ -23,9 +26,11 @@ public class ConnectionFilter implements Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
 
-		/**
-		 * Establecemos la conexion de la clase ConexionDBDS (pool de econexiones)
-		 */
+        /**
+         * Establishes a database connection from the connection pool (ConexionDBDS),
+         * disables auto-commit for transaction management, and makes it available 
+         * for subsequent filters or servlets.
+         */
 		try (Connection conn = ConexionDB.getConnection()) {
 			System.out.println("Filtro ejecutado. Conn: " + conn);
 
@@ -34,9 +39,6 @@ public class ConnectionFilter implements Filter {
 			}
 			// Pass control on to the next filter
 			try {
-				/**
-				 * En esta parte se asigna la variable conn
-				 */
 				servletRequest.setAttribute("conn", conn);
 				filterChain.doFilter(servletRequest, servletResponse);
 				conn.commit();

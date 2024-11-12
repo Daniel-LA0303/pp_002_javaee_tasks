@@ -31,7 +31,5 @@ public class ProjectServlet extends HttpServlet{
 		
 		getServletContext().getRequestDispatcher("/project.jsp").forward(req, resp);
 	}
-	
-	
 
 }

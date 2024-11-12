@@ -5,22 +5,49 @@ import java.time.LocalDateTime;
 
 public class Project {
 
+	/**
+	 * id
+	 */
 	private Long id;
 
+	/**
+	 * title
+	 */
 	private String title;
 
+	/**
+	 * description
+	 */
 	private String description;
 
+	/**
+	 * start date
+	 */
 	private LocalDate startDate;
 
+	/**
+	 * end date
+	 */
 	private LocalDate endDate;
 
+	/**
+	 * status
+	 */
 	private Boolean status;
 
+	/**
+	 * created at
+	 */
 	private LocalDateTime createdAt;
 
+	/**
+	 * updated at
+	 */
 	private LocalDateTime updatedAt;
 
+	/**
+	 * user id
+	 */
 	private Long userId;
 
 	/**

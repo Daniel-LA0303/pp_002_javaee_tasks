@@ -5,24 +5,54 @@ import java.time.LocalDateTime;
 
 public class Task {
 
+	/**
+	 * id
+	 */
 	private Long id;
 
+	/**
+	 * title
+	 */
 	private String title;
 
+	/**
+	 * description
+	 */
 	private String description;
 
+	/**
+	 * due date
+	 */
 	private LocalDate dueDate;
 
+	/**
+	 * status
+	 */
 	private Boolean status;
 
+	/**
+	 * priority
+	 */
 	private String priority;
 
+	/**
+	 * created at
+	 */
 	private LocalDateTime createdAt;
 
+	/**
+	 * updated at
+	 */
 	private LocalDateTime updatedAt;
 
+	/**
+	 * user assigned id
+	 */
 	private Long userAsignedId;
 
+	/**
+	 * project id
+	 */
 	private Long projectId;
 
 	/**

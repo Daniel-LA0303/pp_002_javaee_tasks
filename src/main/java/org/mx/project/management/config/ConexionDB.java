@@ -8,6 +8,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+/**
+ * config data source to connect to data bases MYSQL
+ */
 public class ConexionDB {
 
 	public static Connection getConnection() throws SQLException, NamingException {

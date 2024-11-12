@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.mx.project.management.models.Task;
 
+/**
+ * task repository
+ */
 public interface TaskRepository extends GlobalRepository<Task> {
 
 	List<Task> taskByProject(Long projectId);

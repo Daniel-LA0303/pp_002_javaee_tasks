@@ -15,6 +15,9 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * we filter this servlets, as a security config
+ */
 @WebFilter({ "/principal", "/principal.html", "/projects", "/project", "/project.html", "/get-info-by-project" })
 public class AuthFilter implements Filter {
 

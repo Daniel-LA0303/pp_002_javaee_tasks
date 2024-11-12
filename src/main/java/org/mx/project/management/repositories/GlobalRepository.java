@@ -3,6 +3,10 @@ package org.mx.project.management.repositories;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * global repository to create personal repositories
+ * @param <T>
+ */
 public interface GlobalRepository<T> {
 
 	void delete(Long id) throws SQLException;
